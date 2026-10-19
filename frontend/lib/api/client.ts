@@ -16,13 +16,15 @@ import {
 } from "./schemas";
 import { z } from "zod";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
+const configuredBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.trim().replace(/\/+$/, "");
+const API_BASE_URL =
+  configuredBaseUrl || (process.env.NODE_ENV !== "production" ? "http://localhost:8000" : undefined);
 const DEFAULT_TIMEOUT_MS = 15_000;
 
 export class ApiError extends Error {
   status: number;
-  kind: "network" | "timeout" | "server" | "validation";
-  constructor(kind: "network" | "timeout" | "server" | "validation", status: number) {
+  kind: "config" | "network" | "timeout" | "server" | "validation";
+  constructor(kind: "config" | "network" | "timeout" | "server" | "validation", status: number) {
     super(kind);
     this.kind = kind;
     this.status = status;
@@ -35,6 +37,9 @@ async function requestJson<T>(
   init?: RequestInit,
   timeoutMs: number = DEFAULT_TIMEOUT_MS
 ): Promise<T> {
+  if (!API_BASE_URL) {
+    throw new ApiError("config", 0);
+  }
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   let response: Response;

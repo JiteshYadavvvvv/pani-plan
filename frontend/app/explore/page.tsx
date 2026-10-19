@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Sprout, MapPinned } from "lucide-react";
-import { fetchCrops, fetchDistricts } from "@/lib/api/client";
+import { ApiError, fetchCrops, fetchDistricts } from "@/lib/api/client";
 import type { CropOut, DistrictOut } from "@/lib/api/schemas";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { Section } from "@/components/ui/Section";
@@ -25,6 +25,10 @@ const copy = {
     cropsTab: "Crops",
     districtsTab: "Districts",
     loading: "Loading crops and districts…",
+    errorConfig: "The backend address isn't configured for this deployment. Please contact the site administrator.",
+    errorNetwork: "Could not reach the server. Check your connection and try again.",
+    errorHttp: "The server returned an error. Please try again in a moment.",
+    errorValidation: "The server sent back data in an unexpected format. Please try again.",
   },
   hi: {
     eyebrow: "फसल और जिला डेटा",
@@ -35,6 +39,10 @@ const copy = {
     cropsTab: "फसलें",
     districtsTab: "जिले",
     loading: "फसलें और जिले लोड हो रहे हैं…",
+    errorConfig: "इस डिप्लॉयमेंट के लिए बैकएंड पता कॉन्फ़िगर नहीं किया गया है। कृपया साइट व्यवस्थापक से संपर्क करें।",
+    errorNetwork: "सर्वर से संपर्क नहीं हो सका। अपना कनेक्शन जांचें और फिर से प्रयास करें।",
+    errorHttp: "सर्वर से त्रुटि मिली। कृपया कुछ देर बाद फिर से प्रयास करें।",
+    errorValidation: "सर्वर से अप्रत्याशित प्रारूप में डेटा मिला। कृपया फिर से प्रयास करें।",
   },
 } as const;
 
@@ -45,26 +53,33 @@ export default function ExplorePage() {
   const [crops, setCrops] = useState<CropOut[] | null>(null);
   const [districts, setDistricts] = useState<DistrictOut[] | null>(null);
   const [loading, setLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [tab, setTab] = useState<Tab>("crops");
   const [selectedCropId, setSelectedCropId] = useState<string | null>(null);
   const [selectedDistrictId, setSelectedDistrictId] = useState<string | null>(null);
 
   const loadData = useCallback(async () => {
     setLoading(true);
-    setHasError(false);
+    setErrorMessage(null);
     try {
       const [cropsResult, districtsResult] = await Promise.all([fetchCrops(), fetchDistricts()]);
       setCrops(cropsResult);
       setDistricts(districtsResult);
       setSelectedCropId((previous) => previous ?? cropsResult[0]?.crop_id ?? null);
       setSelectedDistrictId((previous) => previous ?? districtsResult[0]?.district_id ?? null);
-    } catch {
-      setHasError(true);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        if (error.kind === "config") setErrorMessage(c.errorConfig);
+        else if (error.kind === "network" || error.kind === "timeout") setErrorMessage(c.errorNetwork);
+        else if (error.kind === "validation") setErrorMessage(c.errorValidation);
+        else setErrorMessage(c.errorHttp);
+      } else {
+        setErrorMessage(c.errorHttp);
+      }
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [c]);
 
   useEffect(() => {
     loadData();
@@ -101,8 +116,8 @@ export default function ExplorePage() {
             <Spinner />
             <span>{c.loading}</span>
           </div>
-        ) : hasError ? (
-          <ErrorNotice onRetry={loadData} />
+        ) : errorMessage ? (
+          <ErrorNotice message={errorMessage} onRetry={loadData} />
         ) : crops && districts ? (
           <>
             <div
