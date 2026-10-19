@@ -17,22 +17,22 @@ cd backend
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env
+echo "CORS_ORIGINS=http://localhost:3000,https://pani-plan.vercel.app" > .env
 uvicorn main:app --reload --port 8000
 ```
 
-The API is served at `http://localhost:8000`. Health check: `GET /api/health`.
+The API is served at `http://localhost:8000`. Health check: `GET /api/health`. `backend/.env` is gitignored and local-only; the production backend deployment reads `CORS_ORIGINS` from its own Vercel project settings (falling back to the same default if unset).
 
 ## Running the frontend
 
 ```bash
 cd frontend
 npm install
-cp .env.example .env.local
+echo "NEXT_PUBLIC_API_BASE_URL=http://localhost:8000" > .env
 npm run dev
 ```
 
-The app is served at `http://localhost:3000`. `NEXT_PUBLIC_API_BASE_URL` in `frontend/.env.local` must point at the running backend (a local `.env.local` pointing at `http://localhost:8000` is included for development). In production (Vercel), set `NEXT_PUBLIC_API_BASE_URL=https://backend-f8cz.vercel.app` as a project environment variable. The backend's `CORS_ORIGINS` env var must list every frontend origin allowed to call it; it defaults to `http://localhost:3000,https://pani-plan.vercel.app`.
+The app is served at `http://localhost:3000`. `frontend/.env` is gitignored and local-only; it must point `NEXT_PUBLIC_API_BASE_URL` at whichever backend you're running against. In production (Vercel), set `NEXT_PUBLIC_API_BASE_URL=https://backend-f8cz.vercel.app` as a project environment variable in the frontend's Vercel dashboard — this is required for the deployed site to work, since `.env` files are never read for Vercel builds.
 
 ## What's real and what's a sample
 
