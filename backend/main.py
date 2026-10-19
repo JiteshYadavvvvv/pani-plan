@@ -7,7 +7,8 @@ from routers import advisory, explore, lab
 
 app = FastAPI(title="PaaniPlan API", version="1.0.0")
 
-allowed_origins = os.environ.get("CORS_ORIGINS", "http://localhost:3000").split(",")
+default_origins = "http://localhost:3000,https://pani-plan.vercel.app"
+allowed_origins = os.environ.get("CORS_ORIGINS", default_origins).split(",")
 
 app.add_middleware(
     CORSMiddleware,
