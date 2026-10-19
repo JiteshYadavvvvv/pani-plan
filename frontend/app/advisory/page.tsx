@@ -26,12 +26,14 @@ const copy = {
     growthStageLabel: "Growth stage",
     irrigationMethodLabel: "Irrigation method",
     areaLabel: "Field area (hectares)",
-    advancedToggle: "Advanced: override climate values",
+    advancedToggle: "Advanced: override climate & soil values",
     advancedNote:
-      "Leave these blank to use typical seasonal climate values for your district. These are sample figures for demonstration, not live weather readings.",
+      "Leave these blank to use typical seasonal climate values and your district's dominant soil type. These are sample figures for demonstration, not live weather readings.",
     tmaxLabel: "Max temperature (°C)",
     tminLabel: "Min temperature (°C)",
     rainfallLabel: "Rainfall in the last 7 days (mm)",
+    soilLabel: "Soil type",
+    soilPlaceholder: "Use district default",
     submit: "Calculate irrigation advice",
     submitting: "Calculating…",
     requiredError: "Please make a selection.",
@@ -41,6 +43,8 @@ const copy = {
     resultEmptyBody:
       "Fill in the form and press Calculate to get a real, formula-based irrigation recommendation for your field.",
     resultHeading: "Your irrigation recommendation",
+    reasoningNote:
+      "This combines your crop's current water demand with expected rainfall, soil water-holding capacity and your irrigation method's efficiency.",
     breakdownHeading: "How we got there",
     etoLabel: "Reference evapotranspiration (ETo)",
     kcLabel: "Crop coefficient (Kc)",
@@ -59,6 +63,13 @@ const copy = {
       drip: "Drip",
       sprinkler: "Sprinkler",
       flood: "Flood",
+    },
+    soilType: {
+      sandy: "Sandy",
+      sandy_loam: "Sandy Loam",
+      loam: "Loam",
+      clay_loam: "Clay Loam",
+      clay: "Clay",
     },
     stressLabel: {
       low: "Low stress",
@@ -83,12 +94,14 @@ const copy = {
     growthStageLabel: "फसल की अवस्था",
     irrigationMethodLabel: "सिंचाई विधि",
     areaLabel: "खेत का क्षेत्रफल (हेक्टेयर)",
-    advancedToggle: "उन्नत: जलवायु मान बदलें",
+    advancedToggle: "उन्नत: जलवायु और मिट्टी के मान बदलें",
     advancedNote:
-      "इन्हें खाली छोड़ने पर आपके जिले के सामान्य मौसमी जलवायु मान उपयोग होंगे। ये प्रदर्शन हेतु नमूना आंकड़े हैं, लाइव मौसम रीडिंग नहीं।",
+      "इन्हें खाली छोड़ने पर आपके जिले के सामान्य मौसमी जलवायु मान और प्रमुख मिट्टी प्रकार उपयोग होंगे। ये प्रदर्शन हेतु नमूना आंकड़े हैं, लाइव मौसम रीडिंग नहीं।",
     tmaxLabel: "अधिकतम तापमान (°C)",
     tminLabel: "न्यूनतम तापमान (°C)",
     rainfallLabel: "पिछले 7 दिनों की वर्षा (मिमी)",
+    soilLabel: "मिट्टी का प्रकार",
+    soilPlaceholder: "जिले का डिफ़ॉल्ट उपयोग करें",
     submit: "सिंचाई सलाह की गणना करें",
     submitting: "गणना हो रही है…",
     requiredError: "कृपया एक विकल्प चुनें।",
@@ -98,6 +111,8 @@ const copy = {
     resultEmptyBody:
       "फॉर्म भरें और 'गणना करें' दबाएं ताकि आपके खेत के लिए वास्तविक, फॉर्मूला-आधारित सिंचाई सिफारिश मिल सके।",
     resultHeading: "आपकी सिंचाई सिफारिश",
+    reasoningNote:
+      "यह आपकी फसल की वर्तमान जल आवश्यकता को अपेक्षित वर्षा, मिट्टी की जल-धारण क्षमता और आपकी सिंचाई विधि की दक्षता के साथ जोड़ता है।",
     breakdownHeading: "यह गणना कैसे हुई",
     etoLabel: "संदर्भ वाष्पोत्सर्जन (ETo)",
     kcLabel: "फसल गुणांक (Kc)",
@@ -116,6 +131,13 @@ const copy = {
       drip: "ड्रिप",
       sprinkler: "स्प्रिंकलर",
       flood: "फ्लड/बाढ़",
+    },
+    soilType: {
+      sandy: "रेतीली",
+      sandy_loam: "रेतीली दोमट",
+      loam: "दोमट",
+      clay_loam: "चिकनी दोमट",
+      clay: "चिकनी मिट्टी",
     },
     stressLabel: {
       low: "कम तनाव",

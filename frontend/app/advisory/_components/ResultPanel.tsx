@@ -1,10 +1,13 @@
 "use client";
 
 import { Droplets, Sprout } from "lucide-react";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
 import { Badge, stressTone } from "@/components/ui/Badge";
 import { SampleDataBadge } from "@/components/ui/SampleDataBadge";
 import { Spinner } from "@/components/ui/Spinner";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
+import { Disclosure } from "@/components/ui/Disclosure";
 import type { AdvisoryResponse } from "@/lib/api/schemas";
 import type { Locale } from "@/lib/i18n/LanguageProvider";
 
@@ -12,6 +15,7 @@ export interface ResultPanelCopy {
   resultEmptyTitle: string;
   resultEmptyBody: string;
   resultHeading: string;
+  reasoningNote: string;
   breakdownHeading: string;
   etoLabel: string;
   kcLabel: string;
@@ -46,6 +50,23 @@ export function ResultPanel({
   locale: Locale;
   copy: ResultPanelCopy;
 }) {
+  const resultRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const element = resultRef.current;
+    if (!element || status !== "success") return;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) return;
+    const tween = gsap.fromTo(
+      element,
+      { opacity: 0, y: 14 },
+      { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }
+    );
+    return () => {
+      tween.kill();
+    };
+  }, [status, result]);
+
   if (status === "loading") {
     return (
       <div className="flex min-h-[260px] flex-col items-center justify-center gap-3 rounded-lg border border-earth-light bg-surface p-8 text-center">
@@ -80,7 +101,10 @@ export function ResultPanel({
     ];
 
     return (
-      <div className="flex flex-col gap-6 rounded-lg border border-earth-light bg-surface p-6 sm:p-8">
+      <div
+        ref={resultRef}
+        className="flex flex-col gap-6 rounded-lg border border-earth-light bg-surface p-6 sm:p-8"
+      >
         <div className="flex flex-wrap items-start justify-between gap-3">
           <h3 className="font-display text-xl font-semibold text-ink">{copy.resultHeading}</h3>
           <Badge tone={stressTone(result.stress_level)}>{copy.stressLabel[result.stress_level]}</Badge>
@@ -88,12 +112,14 @@ export function ResultPanel({
 
         <div className="flex items-start gap-3 rounded border border-forest/20 bg-ivory p-4">
           <Droplets className="mt-0.5 h-5 w-5 flex-none text-forest" />
-          <p className="font-display text-lg font-semibold leading-snug text-forest-dark">{headline}</p>
+          <div>
+            <p className="font-display text-lg font-semibold leading-snug text-forest-dark">{headline}</p>
+            <p className="mt-1 text-sm leading-relaxed text-muted">{copy.reasoningNote}</p>
+          </div>
         </div>
 
-        <div>
-          <p className="text-sm font-semibold text-ink">{copy.breakdownHeading}</p>
-          <dl className="mt-3 grid gap-3 sm:grid-cols-2">
+        <Disclosure label={copy.breakdownHeading}>
+          <dl className="grid gap-3 sm:grid-cols-2">
             {breakdownRows.map((row) => (
               <div key={row.label} className="flex items-center justify-between gap-3 border-b border-earth-light pb-2">
                 <dt className="text-sm text-muted">{row.label}</dt>
@@ -101,7 +127,7 @@ export function ResultPanel({
               </div>
             ))}
           </dl>
-        </div>
+        </Disclosure>
 
         {result.used_sample_climate ? (
           <div className="flex flex-wrap items-center gap-2 rounded border border-gold bg-gold-light/40 p-3">

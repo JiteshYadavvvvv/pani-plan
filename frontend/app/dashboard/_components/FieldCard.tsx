@@ -2,8 +2,10 @@
 
 import { Trash2 } from "lucide-react";
 import { Badge, stressTone } from "@/components/ui/Badge";
+import { SampleDataBadge } from "@/components/ui/SampleDataBadge";
 import { Spinner } from "@/components/ui/Spinner";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
+import { Disclosure } from "@/components/ui/Disclosure";
 import type { AdvisoryResponse } from "@/lib/api/schemas";
 import type { Locale } from "@/lib/i18n/LanguageProvider";
 
@@ -27,6 +29,15 @@ export interface FieldCardCopy {
   irrigationMethod: Record<DashboardField["irrigationMethod"], string>;
   stressLabel: Record<AdvisoryResponse["stress_level"], string>;
   headline: (grossMm: string, litres: string, days: number) => string;
+  reasoningNote: string;
+  breakdownHeading: string;
+  etoLabel: string;
+  kcLabel: string;
+  etcLabel: string;
+  effectiveRainfallLabel: string;
+  mmPerDay: string;
+  sampleClimateNote: string;
+  regionalStressLabel: (index: number) => string;
 }
 
 function formatNumber(value: number, locale: Locale, maximumFractionDigits = 1): string {
@@ -39,6 +50,7 @@ export function FieldCard({
   field,
   districtName,
   cropName,
+  baselineStressIndex,
   state,
   onRemove,
   onRetry,
@@ -48,6 +60,7 @@ export function FieldCard({
   field: DashboardField;
   districtName: string;
   cropName: string;
+  baselineStressIndex?: number;
   state: FieldAdvisoryState;
   onRemove: () => void;
   onRetry: () => void;
@@ -84,17 +97,51 @@ export function FieldCard({
       ) : state === "error" ? (
         <ErrorNotice message={copy.cardErrorMessage} onRetry={onRetry} />
       ) : (
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-4">
           <div className="flex flex-wrap items-center gap-2">
             <Badge tone={stressTone(state.stress_level)}>{copy.stressLabel[state.stress_level]}</Badge>
+            {typeof baselineStressIndex === "number" ? (
+              <span className="text-xs tabular-nums text-muted">
+                {copy.regionalStressLabel(baselineStressIndex)}
+              </span>
+            ) : null}
           </div>
-          <p className="tabular-nums text-sm font-semibold leading-snug text-forest-dark">
-            {copy.headline(
-              formatNumber(state.gross_irrigation_mm, locale),
-              formatNumber(state.total_water_liters, locale, 0),
-              Math.round(state.irrigation_interval_days)
-            )}
-          </p>
+
+          <div>
+            <p className="tabular-nums text-sm font-semibold leading-snug text-forest-dark">
+              {copy.headline(
+                formatNumber(state.gross_irrigation_mm, locale),
+                formatNumber(state.total_water_liters, locale, 0),
+                Math.round(state.irrigation_interval_days)
+              )}
+            </p>
+            <p className="mt-1 text-xs leading-relaxed text-muted">{copy.reasoningNote}</p>
+          </div>
+
+          <Disclosure label={copy.breakdownHeading}>
+            <dl className="flex flex-col gap-2 border-t border-earth-light pt-3">
+              {[
+                { label: copy.etoLabel, value: `${formatNumber(state.eto_mm_day, locale, 2)} ${copy.mmPerDay}` },
+                { label: copy.kcLabel, value: formatNumber(state.kc, locale, 2) },
+                { label: copy.etcLabel, value: `${formatNumber(state.etc_mm_day, locale, 2)} ${copy.mmPerDay}` },
+                {
+                  label: copy.effectiveRainfallLabel,
+                  value: `${formatNumber(state.effective_rainfall_mm_day, locale, 2)} ${copy.mmPerDay}`,
+                },
+              ].map((row) => (
+                <div key={row.label} className="flex items-center justify-between gap-3 text-xs">
+                  <dt className="text-muted">{row.label}</dt>
+                  <dd className="tabular-nums font-semibold text-ink">{row.value}</dd>
+                </div>
+              ))}
+            </dl>
+            {state.used_sample_climate ? (
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <SampleDataBadge />
+                <p className="text-xs leading-relaxed text-muted">{copy.sampleClimateNote}</p>
+              </div>
+            ) : null}
+          </Disclosure>
         </div>
       )}
     </div>

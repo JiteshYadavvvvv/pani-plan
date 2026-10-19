@@ -24,6 +24,8 @@ export interface AdvisoryFormCopy {
   tmaxLabel: string;
   tminLabel: string;
   rainfallLabel: string;
+  soilLabel: string;
+  soilPlaceholder: string;
   submit: string;
   submitting: string;
   requiredError: string;
@@ -31,6 +33,7 @@ export interface AdvisoryFormCopy {
   climateRangeError: string;
   growthStage: Record<AdvisoryRequest["growth_stage"], string>;
   irrigationMethod: Record<AdvisoryRequest["irrigation_method"], string>;
+  soilType: Record<NonNullable<AdvisoryRequest["soil_type_override"]>, string>;
 }
 
 const DEFAULT_VALUES: AdvisoryRequest = {
@@ -45,6 +48,10 @@ function toOptionalNumber(value: unknown): number | undefined {
   if (value === "" || value === null || typeof value === "undefined") return undefined;
   const parsed = Number(value);
   return Number.isNaN(parsed) ? undefined : parsed;
+}
+
+function toOptionalString(value: unknown): string | undefined {
+  return value === "" || value === null || typeof value === "undefined" ? undefined : (value as string);
 }
 
 export function AdvisoryForm({
@@ -91,6 +98,10 @@ export function AdvisoryForm({
   const growthStageOptions = Object.entries(copy.growthStage) as [AdvisoryRequest["growth_stage"], string][];
   const irrigationMethodOptions = Object.entries(copy.irrigationMethod) as [
     AdvisoryRequest["irrigation_method"],
+    string,
+  ][];
+  const soilTypeOptions = Object.entries(copy.soilType) as [
+    NonNullable<AdvisoryRequest["soil_type_override"]>,
     string,
   ][];
 
@@ -271,6 +282,23 @@ export function AdvisoryForm({
                     <p className={errorClasses}>{copy.climateRangeError}</p>
                   ) : null}
                 </div>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="soil_type_override" className={labelClasses}>
+                  {copy.soilLabel}
+                </label>
+                <select
+                  id="soil_type_override"
+                  className={clsx(inputClasses, "max-w-xs")}
+                  {...register("soil_type_override", { setValueAs: toOptionalString })}
+                >
+                  <option value="">{copy.soilPlaceholder}</option>
+                  {soilTypeOptions.map(([value, label]) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
           </div>

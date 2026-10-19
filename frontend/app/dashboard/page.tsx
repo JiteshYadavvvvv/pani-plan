@@ -68,6 +68,16 @@ const copy = {
     },
     headline: (grossMm: string, litres: string, days: number) =>
       `Apply ~${grossMm} mm (~${litres} litres) every ${days} ${days === 1 ? "day" : "days"}`,
+    reasoningNote:
+      "This combines the crop's current water demand with expected rainfall, soil water-holding capacity and the chosen irrigation method's efficiency.",
+    breakdownHeading: "Weather & calculation details",
+    etoLabel: "Reference evapotranspiration (ETo)",
+    kcLabel: "Crop coefficient (Kc)",
+    etcLabel: "Crop water demand (ETc)",
+    effectiveRainfallLabel: "Effective rainfall",
+    mmPerDay: "mm/day",
+    sampleClimateNote: "Typical seasonal climate for this district was used, not a live weather reading.",
+    regionalStressLabel: (index: number) => `District baseline: ${index}/100 (sample index)`,
   },
   hi: {
     heroEyebrow: "मेरे खेत",
@@ -119,6 +129,16 @@ const copy = {
     },
     headline: (grossMm: string, litres: string, days: number) =>
       `हर ${days} दिन में ~${grossMm} मिमी (~${litres} लीटर) पानी दें`,
+    reasoningNote:
+      "यह फसल की वर्तमान जल आवश्यकता को अपेक्षित वर्षा, मिट्टी की जल-धारण क्षमता और चुनी गई सिंचाई विधि की दक्षता के साथ जोड़ता है।",
+    breakdownHeading: "मौसम और गणना विवरण",
+    etoLabel: "संदर्भ वाष्पोत्सर्जन (ETo)",
+    kcLabel: "फसल गुणांक (Kc)",
+    etcLabel: "फसल जल आवश्यकता (ETc)",
+    effectiveRainfallLabel: "प्रभावी वर्षा",
+    mmPerDay: "मिमी/दिन",
+    sampleClimateNote: "इस जिले के लिए सामान्य मौसमी जलवायु का उपयोग किया गया, लाइव मौसम रीडिंग नहीं।",
+    regionalStressLabel: (index: number) => `जिला आधार: ${index}/100 (नमूना सूचकांक)`,
   },
 } as const;
 
@@ -282,6 +302,15 @@ export default function DashboardPage() {
     [referenceData]
   );
 
+  const getBaselineStressIndex = useCallback(
+    (districtId: string) => {
+      if (referenceData.status !== "ready") return undefined;
+      return referenceData.districts.find((candidate) => candidate.district_id === districtId)
+        ?.baseline_water_stress_index;
+    },
+    [referenceData]
+  );
+
   const scrollToAddForm = useCallback(() => {
     document.getElementById("add-field-form")?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
@@ -331,6 +360,7 @@ export default function DashboardPage() {
                     field={field}
                     districtName={getDistrictName(field.districtId)}
                     cropName={getCropName(field.cropId)}
+                    baselineStressIndex={getBaselineStressIndex(field.districtId)}
                     state={advisoryMap[field.id] ?? "loading"}
                     onRemove={() => handleRemoveField(field.id)}
                     onRetry={() => fetchForField(field)}
