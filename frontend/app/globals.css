@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-ivory: #fbf7ee;
+  --color-cream: #f3ecdb;
+  --color-surface: #ffffff;
+  --color-forest: #1f3a2c;
+  --color-forest-dark: #142a1f;
+  --color-sage: #aec9a4;
+  --color-sage-light: #e4ecdc;
+  --color-gold: #c6901f;
+  --color-gold-light: #efd9a8;
+  --color-earth: #8a7359;
+  --color-earth-light: #ddd3c0;
+  --color-ink: #2a251e;
+  --color-muted: #6c6253;
+
+  --color-stress-low: #3f7a4c;
+  --color-stress-low-bg: #e7f1e4;
+  --color-stress-low-border: #bfdcb9;
+  --color-stress-moderate: #a06c15;
+  --color-stress-moderate-bg: #faf0db;
+  --color-stress-moderate-border: #e8c878;
+  --color-stress-high: #a3511f;
+  --color-stress-high-bg: #fae3d4;
+  --color-stress-high-border: #e8a77c;
+  --color-stress-severe: #8c2a20;
+  --color-stress-severe-bg: #f6dcd9;
+  --color-stress-severe-border: #e2a19b;
+
+  --font-display: var(--font-fraunces), var(--font-noto-serif-dev), serif;
+  --font-sans: var(--font-inter), var(--font-noto-sans-dev), system-ui, sans-serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body {
+  background-color: var(--color-ivory);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-forest);
+  outline-offset: 2px;
+}
