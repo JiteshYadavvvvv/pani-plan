@@ -5,8 +5,8 @@ import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { Reveal } from "@/lib/motion/Reveal";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { Card } from "@/components/ui/Card";
-import { Stat } from "@/components/ui/Stat";
 import { LinkButton } from "@/components/ui/Button";
+import { Hero } from "@/components/home/Hero";
 
 export default function HomePage() {
   const { t } = useLanguage();
@@ -37,40 +37,7 @@ export default function HomePage() {
 
   return (
     <>
-      <Section tone="forest" className="pb-24 pt-16 sm:pt-24">
-        <Reveal>
-          <p className="text-sm font-semibold uppercase tracking-[0.14em] text-gold-light">
-            {t("home.hero.eyebrow")}
-          </p>
-        </Reveal>
-        <Reveal delay={0.05}>
-          <h1 className="mt-4 max-w-3xl font-display text-5xl font-semibold leading-[1.05] sm:text-6xl">
-            {t("home.hero.title")}
-          </h1>
-        </Reveal>
-        <Reveal delay={0.1}>
-          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-sage-light sm:text-xl">
-            {t("home.hero.subtitle")}
-          </p>
-        </Reveal>
-        <Reveal delay={0.15}>
-          <div className="mt-9 flex flex-wrap gap-4">
-            <LinkButton href="/advisory" variant="onDark" size="lg">
-              {t("home.hero.ctaPrimary")}
-            </LinkButton>
-            <LinkButton href="/how-it-works" variant="onDarkGhost" size="lg">
-              {t("home.hero.ctaSecondary")}
-            </LinkButton>
-          </div>
-        </Reveal>
-        <Reveal delay={0.2}>
-          <div className="mt-16 flex flex-wrap gap-10 border-t border-ivory/15 pt-10">
-            <Stat value="18" label={t("home.hero.statFarmers")} />
-            <Stat value="12" label={t("home.hero.statCrops")} />
-            <Stat value="3" label={t("home.hero.statCores")} />
-          </div>
-        </Reveal>
-      </Section>
+      <Hero />
 
       <Section tone="ivory">
         <Reveal>

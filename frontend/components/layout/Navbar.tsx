@@ -3,21 +3,20 @@
 import { Droplets, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { clsx } from "clsx";
+import gsap from "gsap";
 import { useLanguage, type Locale } from "@/lib/i18n/LanguageProvider";
 import type { TranslationKey } from "@/lib/i18n/en";
 import { Container } from "../ui/Container";
 import { LinkButton } from "../ui/Button";
 
 const navLinks: { href: string; labelKey: TranslationKey }[] = [
-  { href: "/advisory", labelKey: "nav.advisory" },
-  { href: "/dashboard", labelKey: "nav.dashboard" },
-  { href: "/explore", labelKey: "nav.explore" },
-  { href: "/map", labelKey: "nav.map" },
-  { href: "/lab", labelKey: "nav.lab" },
-  { href: "/benchmarks", labelKey: "nav.benchmarks" },
+  { href: "/", labelKey: "nav.home" },
   { href: "/how-it-works", labelKey: "nav.howItWorks" },
+  { href: "/advisory", labelKey: "nav.advisory" },
+  { href: "/lab", labelKey: "nav.lab" },
+  { href: "/about", labelKey: "nav.about" },
 ];
 
 function LanguageToggle() {
@@ -51,9 +50,28 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
   const { t } = useLanguage();
+  const headerRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const element = headerRef.current;
+    if (!element) return;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) return;
+    const tween = gsap.fromTo(
+      element,
+      { opacity: 0, y: -16 },
+      { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }
+    );
+    return () => {
+      tween.kill();
+    };
+  }, []);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-earth-light bg-ivory/95 backdrop-blur">
+    <header
+      ref={headerRef}
+      className="sticky top-0 z-50 border-b border-earth-light bg-ivory/95 backdrop-blur"
+    >
       <Container>
         <div className="flex items-center justify-between py-3">
           <Link href="/" className="flex items-center gap-2" onClick={() => setMobileOpen(false)}>
@@ -63,17 +81,23 @@ export function Navbar() {
             </span>
           </Link>
 
-          <nav className="hidden items-center gap-6 lg:flex">
+          <nav className="hidden items-center gap-7 lg:flex">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 className={clsx(
-                  "text-sm font-medium transition-colors hover:text-forest",
+                  "group relative py-1 text-sm font-medium transition-colors hover:text-forest",
                   pathname === link.href ? "text-forest" : "text-ink/80"
                 )}
               >
                 {t(link.labelKey)}
+                <span
+                  className={clsx(
+                    "absolute inset-x-0 -bottom-0.5 h-px origin-left scale-x-0 bg-forest transition-transform duration-300 ease-out group-hover:scale-x-100",
+                    pathname === link.href && "scale-x-100"
+                  )}
+                />
               </Link>
             ))}
           </nav>
@@ -114,20 +138,6 @@ export function Navbar() {
                   {t(link.labelKey)}
                 </Link>
               ))}
-              <Link
-                href="/about"
-                onClick={() => setMobileOpen(false)}
-                className="rounded px-3 py-2.5 text-sm font-medium text-ink/80"
-              >
-                {t("nav.about")}
-              </Link>
-              <Link
-                href="/faq"
-                onClick={() => setMobileOpen(false)}
-                className="rounded px-3 py-2.5 text-sm font-medium text-ink/80"
-              >
-                {t("nav.faq")}
-              </Link>
             </nav>
             <div className="flex items-center justify-between gap-3 border-t border-earth-light py-4">
               <LanguageToggle />
