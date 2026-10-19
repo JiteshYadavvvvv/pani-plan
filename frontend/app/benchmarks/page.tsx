@@ -276,7 +276,7 @@ export default function BenchmarksPage() {
         <Reveal>
           <div className="flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:justify-between">
             <SectionHeading title={c.labCtaHeading} className="max-w-xl" />
-            <LinkButton href="/lab" size="lg">
+            <LinkButton href="/lab" variant="onDark" size="lg">
               {c.labCtaButton}
             </LinkButton>
           </div>

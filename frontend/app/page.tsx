@@ -55,10 +55,10 @@ export default function HomePage() {
         </Reveal>
         <Reveal delay={0.15}>
           <div className="mt-9 flex flex-wrap gap-4">
-            <LinkButton href="/advisory" size="lg">
+            <LinkButton href="/advisory" variant="onDark" size="lg">
               {t("home.hero.ctaPrimary")}
             </LinkButton>
-            <LinkButton href="/how-it-works" variant="ghost" size="lg" className="border-sage-light/40 text-ivory hover:bg-forest-dark">
+            <LinkButton href="/how-it-works" variant="onDarkGhost" size="lg">
               {t("home.hero.ctaSecondary")}
             </LinkButton>
           </div>
@@ -131,7 +131,7 @@ export default function HomePage() {
               </h2>
               <p className="mt-3 max-w-xl text-lg text-sage-light">{t("home.cta.body")}</p>
             </div>
-            <LinkButton href="/advisory" size="lg">
+            <LinkButton href="/advisory" variant="onDark" size="lg">
               {t("home.cta.button")}
             </LinkButton>
           </div>

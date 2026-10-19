@@ -2,7 +2,7 @@ import { clsx } from "clsx";
 import Link from "next/link";
 import type { ButtonHTMLAttributes } from "react";
 
-type Variant = "primary" | "secondary" | "ghost";
+type Variant = "primary" | "secondary" | "ghost" | "onDark" | "onDarkGhost";
 type Size = "sm" | "md" | "lg";
 
 const variantClasses: Record<Variant, string> = {
@@ -11,6 +11,8 @@ const variantClasses: Record<Variant, string> = {
   secondary:
     "bg-transparent text-forest border border-forest hover:bg-forest hover:text-ivory",
   ghost: "bg-transparent text-ink border border-earth-light hover:bg-sage-light",
+  onDark: "bg-gold text-forest-dark border border-gold hover:bg-gold-light",
+  onDarkGhost: "bg-transparent text-ivory border border-ivory/40 hover:bg-forest-dark",
 };
 
 const sizeClasses: Record<Size, string> = {
