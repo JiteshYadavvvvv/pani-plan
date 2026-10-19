@@ -9,7 +9,8 @@ import { Card } from "@/components/ui/Card";
 import { Button, LinkButton } from "@/components/ui/Button";
 import { Spinner } from "@/components/ui/Spinner";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
-import { fetchBenchmark, ApiError } from "@/lib/api/client";
+import { classifyApiError, fetchBenchmark } from "@/lib/api/client";
+import { apiErrorMessageKey } from "@/lib/api/errorMessage";
 import type { BenchmarkResponse } from "@/lib/api/schemas";
 import { AmdahlChart, type AmdahlChartCopy } from "./_components/AmdahlChart";
 
@@ -133,11 +134,7 @@ export default function BenchmarksPage() {
       const data = await fetchBenchmark({ workload_size: EXAMPLE_WORKLOAD_SIZE });
       setRunState({ status: "success", data });
     } catch (error) {
-      const message =
-        error instanceof ApiError && error.status === 0
-          ? t("common.error.network")
-          : t("common.error.generic");
-      setRunState({ status: "error", message });
+      setRunState({ status: "error", message: t(apiErrorMessageKey(classifyApiError(error))) });
     }
   }, [t]);
 

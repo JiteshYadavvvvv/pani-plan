@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { Info, MapPin, SlidersHorizontal, Sprout } from "lucide-react";
-import { fetchWaterStressMap } from "@/lib/api/client";
+import { classifyApiError, fetchWaterStressMap } from "@/lib/api/client";
+import { apiErrorMessageKey } from "@/lib/api/errorMessage";
 import type { WaterStressMapPoint } from "@/lib/api/schemas";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { Section } from "@/components/ui/Section";
@@ -101,24 +102,24 @@ export default function MapPage() {
 
   const [points, setPoints] = useState<WaterStressMapPoint[] | null>(null);
   const [loading, setLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [threshold, setThreshold] = useState(0);
   const [sortMode, setSortMode] = useState<SortMode>("stress-desc");
   const [selectedDistrictId, setSelectedDistrictId] = useState<string | null>(null);
 
   const loadData = useCallback(async () => {
     setLoading(true);
-    setHasError(false);
+    setErrorMessage(null);
     try {
       const result = await fetchWaterStressMap();
       setPoints(result);
       setSelectedDistrictId((previous) => previous ?? result[0]?.district_id ?? null);
-    } catch {
-      setHasError(true);
+    } catch (error) {
+      setErrorMessage(t(apiErrorMessageKey(classifyApiError(error))));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     loadData();
@@ -166,8 +167,8 @@ export default function MapPage() {
             <Spinner />
             <span>{c.loading}</span>
           </div>
-        ) : hasError ? (
-          <ErrorNotice onRetry={loadData} />
+        ) : errorMessage ? (
+          <ErrorNotice message={errorMessage} onRetry={loadData} />
         ) : points ? (
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
             <div className="flex flex-col gap-4">

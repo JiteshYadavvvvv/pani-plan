@@ -31,6 +31,16 @@ export class ApiError extends Error {
   }
 }
 
+export type ApiErrorCategory = "config" | "network" | "http" | "validation" | "unknown";
+
+export function classifyApiError(error: unknown): ApiErrorCategory {
+  if (!(error instanceof ApiError)) return "unknown";
+  if (error.kind === "config") return "config";
+  if (error.kind === "network" || error.kind === "timeout") return "network";
+  if (error.kind === "validation") return "validation";
+  return "http";
+}
+
 async function requestJson<T>(
   path: string,
   schema: z.ZodType<T>,

@@ -11,7 +11,8 @@ import { SampleDataBadge } from "@/components/ui/SampleDataBadge";
 import { Spinner } from "@/components/ui/Spinner";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { LinkButton } from "@/components/ui/Button";
-import { ApiError, fetchWaterStressMap } from "@/lib/api/client";
+import { classifyApiError, fetchWaterStressMap } from "@/lib/api/client";
+import { apiErrorMessageKey } from "@/lib/api/errorMessage";
 import type { WaterStressMapPoint } from "@/lib/api/schemas";
 
 const stressLabelKey: Record<WaterStressMapPoint["stress_level"], TranslationKey> = {
@@ -38,11 +39,7 @@ export function Intelligence() {
       })
       .catch((error) => {
         if (cancelled) return;
-        const message =
-          error instanceof ApiError && error.status === 0
-            ? t("common.error.network")
-            : t("common.error.generic");
-        setState({ status: "error", message });
+        setState({ status: "error", message: t(apiErrorMessageKey(classifyApiError(error))) });
       });
     return () => {
       cancelled = true;

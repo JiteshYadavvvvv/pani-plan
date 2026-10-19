@@ -6,7 +6,8 @@ import { Reveal } from "@/lib/motion/Reveal";
 import { Section } from "@/components/ui/Section";
 import { Spinner } from "@/components/ui/Spinner";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
-import { ApiError, fetchAdvisory, fetchCrops, fetchDistricts } from "@/lib/api/client";
+import { classifyApiError, fetchAdvisory, fetchCrops, fetchDistricts } from "@/lib/api/client";
+import { apiErrorMessageKey } from "@/lib/api/errorMessage";
 import type { AdvisoryRequest, AdvisoryResponse, CropOut, DistrictOut } from "@/lib/api/schemas";
 import { AdvisoryForm } from "./_components/AdvisoryForm";
 import { ResultPanel, type ResultStatus } from "./_components/ResultPanel";
@@ -172,10 +173,10 @@ export default function AdvisoryPage() {
       .then(([districts, crops]) => {
         setReferenceData({ status: "ready", districts, crops });
       })
-      .catch(() => {
-        setReferenceData({ status: "error", message: c.loadError });
+      .catch((error) => {
+        setReferenceData({ status: "error", message: t(apiErrorMessageKey(classifyApiError(error))) });
       });
-  }, [c.loadError]);
+  }, [t]);
 
   useEffect(() => {
     loadReferenceData();
@@ -193,9 +194,7 @@ export default function AdvisoryPage() {
           setResultStatus("success");
         })
         .catch((error: unknown) => {
-          const message =
-            error instanceof ApiError && error.status === 0 ? t("common.error.network") : t("common.error.generic");
-          setSubmitError(message);
+          setSubmitError(t(apiErrorMessageKey(classifyApiError(error))));
           setResultStatus("error");
         })
         .finally(() => {

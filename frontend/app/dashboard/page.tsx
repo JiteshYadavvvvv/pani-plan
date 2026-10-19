@@ -8,7 +8,8 @@ import { Section } from "@/components/ui/Section";
 import { Spinner } from "@/components/ui/Spinner";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { Button } from "@/components/ui/Button";
-import { fetchAdvisory, fetchCrops, fetchDistricts } from "@/lib/api/client";
+import { classifyApiError, fetchAdvisory, fetchCrops, fetchDistricts } from "@/lib/api/client";
+import { apiErrorMessageKey } from "@/lib/api/errorMessage";
 import type { AdvisoryRequest, CropOut, DistrictOut } from "@/lib/api/schemas";
 import { FieldForm, type FieldFormValues } from "./_components/FieldForm";
 import { FieldCard, type DashboardField, type FieldAdvisoryState } from "./_components/FieldCard";
@@ -197,7 +198,7 @@ type ReferenceDataState =
   | { status: "ready"; districts: DistrictOut[]; crops: CropOut[] };
 
 export default function DashboardPage() {
-  const { locale } = useLanguage();
+  const { locale, t } = useLanguage();
   const c = copy[locale];
 
   const [referenceData, setReferenceData] = useState<ReferenceDataState>({ status: "loading" });
@@ -212,10 +213,10 @@ export default function DashboardPage() {
       .then(([districts, crops]) => {
         setReferenceData({ status: "ready", districts, crops });
       })
-      .catch(() => {
-        setReferenceData({ status: "error", message: c.loadError });
+      .catch((error) => {
+        setReferenceData({ status: "error", message: t(apiErrorMessageKey(classifyApiError(error))) });
       });
-  }, [c.loadError]);
+  }, [t]);
 
   useEffect(() => {
     loadReferenceData();

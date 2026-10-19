@@ -9,7 +9,8 @@ import { Card } from "@/components/ui/Card";
 import { Spinner } from "@/components/ui/Spinner";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { LinkButton } from "@/components/ui/Button";
-import { fetchBenchmark, ApiError } from "@/lib/api/client";
+import { classifyApiError, fetchBenchmark } from "@/lib/api/client";
+import { apiErrorMessageKey } from "@/lib/api/errorMessage";
 import type { BenchmarkRequest, BenchmarkResponse } from "@/lib/api/schemas";
 import { LabControls, type LabControlsCopy } from "./_components/LabControls";
 import { ModeLegend, SpeedupChart, TimeComparisonChart, buildChartRows } from "./_components/BenchmarkCharts";
@@ -150,11 +151,7 @@ export default function LabPage() {
       const data = await fetchBenchmark(payload);
       setRunState({ status: "success", data });
     } catch (error) {
-      const message =
-        error instanceof ApiError && error.status === 0
-          ? t("common.error.network")
-          : t("common.error.generic");
-      setRunState({ status: "error", message });
+      setRunState({ status: "error", message: t(apiErrorMessageKey(classifyApiError(error))) });
     }
   }, [workloadSize, maxWorkersInput, t]);
 
