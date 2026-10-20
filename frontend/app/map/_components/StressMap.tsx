@@ -2,7 +2,7 @@
 
 import "leaflet/dist/leaflet.css";
 import { useEffect } from "react";
-import { CircleMarker, MapContainer, Popup, TileLayer, useMap } from "react-leaflet";
+import { CircleMarker, MapContainer, Popup, TileLayer, Tooltip, useMap } from "react-leaflet";
 import { Sprout } from "lucide-react";
 import type { WaterStressMapPoint } from "@/lib/api/schemas";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
@@ -44,10 +44,12 @@ export function StressMap({
   points,
   selectedDistrictId,
   onSelectDistrict,
+  cropNameById,
 }: {
   points: WaterStressMapPoint[];
   selectedDistrictId: string | null;
   onSelectDistrict: (districtId: string) => void;
+  cropNameById: Map<string, string>;
 }) {
   const { t } = useLanguage();
   const selectedPoint = points.find((point) => point.district_id === selectedDistrictId) ?? null;
@@ -80,6 +82,11 @@ export function StressMap({
             click: () => onSelectDistrict(point.district_id),
           }}
         >
+          <Tooltip direction="top" offset={[0, -4]} opacity={1}>
+            <span className="font-sans text-xs font-medium text-ink">
+              {point.name} · {point.state}
+            </span>
+          </Tooltip>
           <Popup>
             <div className="min-w-[200px] font-sans">
               <p className="font-semibold text-ink">
@@ -92,7 +99,7 @@ export function StressMap({
               {point.primary_crops.length > 0 ? (
                 <p className="mt-1.5 flex items-start gap-1.5 text-xs text-muted">
                   <Sprout className="mt-0.5 h-3.5 w-3.5 shrink-0 text-forest" />
-                  {point.primary_crops.join(", ")}
+                  {point.primary_crops.map((id) => cropNameById.get(id) ?? id).join(", ")}
                 </p>
               ) : null}
             </div>
