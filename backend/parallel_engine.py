@@ -133,7 +133,10 @@ def run_benchmark_suite(workload_size: int, max_workers: int | None = None) -> d
     for workers in worker_counts:
         if workers == 1:
             continue
-        _, elapsed = run_multiprocess(records, workers)
+        try:
+            _, elapsed = run_multiprocess(records, workers)
+        except Exception:
+            continue
         speedup = serial_time / elapsed if elapsed > 0 else 0.0
         runs.append(BenchmarkRun("multiprocess", workers, round(elapsed, 5), round(speedup, 3)))
 
@@ -142,7 +145,7 @@ def run_benchmark_suite(workload_size: int, max_workers: int | None = None) -> d
     runs.append(BenchmarkRun("vectorized", 1, round(vec_time, 5), round(vec_speedup, 3)))
 
     measured_points = [(r.workers, r.speedup) for r in runs if r.mode == "multiprocess"]
-    serial_fraction = estimate_serial_fraction(measured_points) if measured_points else 0.5
+    serial_fraction = estimate_serial_fraction(measured_points) if measured_points else 1.0
 
     return {
         "results": runs,
