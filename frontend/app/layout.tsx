@@ -28,7 +28,7 @@ const notoSansDevanagari = Noto_Sans_Devanagari({
 });
 
 export const metadata: Metadata = {
-  title: "PaaniPlan — Ek line mein sinchai salah",
+  title: "PaaniPlan",
   description:
     "PaaniPlan turns soil, crop and climate data into clear irrigation advice for Indian farms, powered by a real parallel-computing engine.",
 };

@@ -224,7 +224,7 @@ export default function MapPage() {
 
   return (
     <>
-      <Section tone="forest" className="pb-14 pt-16">
+      <Section tone="forest" className="pb-16 pt-16">
         <Reveal>
           <p className="text-sm font-semibold uppercase tracking-[0.14em] text-gold-light">{c.eyebrow}</p>
           <h1 className="mt-4 max-w-3xl font-display text-4xl font-semibold leading-tight sm:text-5xl">
