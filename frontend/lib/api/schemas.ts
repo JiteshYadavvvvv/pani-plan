@@ -101,14 +101,17 @@ export const cropAnalysisResponseSchema = z.object({
   crop_identified: z.string().nullable(),
   condition_type: z.enum(["healthy", "suspected_disease", "abiotic_stress", "pest_damage", "poor_image_quality", "inconclusive"]),
   suspected_issue: z.string().nullable(),
+  visible_symptoms: z.array(z.string()).default([]),
+  potential_causes: z.array(z.string()).default([]),
   confidence_note: z.string(),
-  abiotic_factors: z.array(z.string()),
-  recommendations: z.array(z.string()),
+  abiotic_factors: z.array(z.string()).default([]),
+  recommendations: z.array(z.string()).default([]),
+  preventive_measures: z.array(z.string()).default([]),
   uncertainty_note: z.string(),
   needs_expert: z.boolean(),
   image_quality: z.enum(["good", "fair", "poor"]),
   provider: z.string(),
-  context_used: z.record(z.string()),
+  context_used: z.record(z.string()).default({}),
 });
 export type CropAnalysisResponse = z.infer<typeof cropAnalysisResponseSchema>;
 

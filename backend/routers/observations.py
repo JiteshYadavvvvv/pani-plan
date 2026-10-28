@@ -10,25 +10,29 @@ router = APIRouter()
 
 
 class ObservationCreate(BaseModel):
-    model_config = {"extra": "forbid"}
+    model_config = {"extra": "ignore"}
 
     field_label: str
     district_id: str
     crop_id: str
     growth_stage: str
-    advisory_result: dict[str, Any]
+    advisory_result: dict[str, Any] = {}
     crop_analysis_result: dict[str, Any] | None = None
     notes: str | None = None
 
 
 class ObservationOut(BaseModel):
-    model_config = {"extra": "forbid"}
+    model_config = {"extra": "ignore"}
 
     id: str
     field_label: str
     district_id: str
     crop_id: str
     created_at: str
+
+
+class ObservationsStatus(BaseModel):
+    configured: bool
 
 
 def _get_client():
@@ -38,6 +42,12 @@ def _get_client():
         return None
     from supabase import create_client
     return create_client(url, key)
+
+
+@router.get("/api/observations/status", response_model=ObservationsStatus)
+def observations_status() -> ObservationsStatus:
+    client = _get_client()
+    return ObservationsStatus(configured=client is not None)
 
 
 @router.post("/api/observations", response_model=ObservationOut)

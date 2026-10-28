@@ -25,7 +25,7 @@ import { z } from "zod";
 
 const configuredBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.trim().replace(/\/+$/, "");
 const API_BASE_URL =
-  configuredBaseUrl || (process.env.NODE_ENV !== "production" ? "http://localhost:8000" : undefined);
+  configuredBaseUrl || (process.env.NODE_ENV !== "production" ? "http://localhost:8000" : "https://backend-f8cz.vercel.app");
 const DEFAULT_TIMEOUT_MS = 15_000;
 
 export class ApiError extends Error {
@@ -156,4 +156,15 @@ export async function saveObservation(payload: ObservationCreate): Promise<Obser
 
 export function fetchObservations(): Promise<ObservationOut[]> {
   return requestJson("/api/observations", z.array(observationOutSchema));
+}
+
+export function fetchCropAnalysisStatus(): Promise<{ configured: boolean; provider: string; model: string }> {
+  return requestJson(
+    "/api/crop-analysis/status",
+    z.object({
+      configured: z.boolean(),
+      provider: z.string(),
+      model: z.string(),
+    })
+  );
 }

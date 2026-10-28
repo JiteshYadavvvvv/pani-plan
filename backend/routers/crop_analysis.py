@@ -14,20 +14,39 @@ ALLOWED_CONTENT_TYPES = {"image/jpeg", "image/png", "image/webp", "image/gif"}
 MAX_IMAGE_SIZE = 10_000_000
 
 
+class CropAnalysisStatus(BaseModel):
+    configured: bool
+    provider: str
+    model: str
+
+
 class CropAnalysisResponse(BaseModel):
-    model_config = {"extra": "forbid"}
+    model_config = {"extra": "ignore"}
 
     crop_identified: str | None
     condition_type: str
     suspected_issue: str | None
+    visible_symptoms: list[str] = []
+    potential_causes: list[str] = []
     confidence_note: str
-    abiotic_factors: list[str]
-    recommendations: list[str]
+    abiotic_factors: list[str] = []
+    recommendations: list[str] = []
+    preventive_measures: list[str] = []
     uncertainty_note: str
     needs_expert: bool
     image_quality: str
     provider: str
-    context_used: dict[str, Any]
+    context_used: dict[str, Any] = {}
+
+
+@router.get("/api/crop-analysis/status", response_model=CropAnalysisStatus)
+def crop_analysis_status() -> CropAnalysisStatus:
+    configured = bool(os.environ.get("GEMINI_API_KEY"))
+    return CropAnalysisStatus(
+        configured=configured,
+        provider="gemini-1.5-flash",
+        model="gemini-1.5-flash",
+    )
 
 
 @router.post("/api/crop-analysis", response_model=CropAnalysisResponse)
@@ -52,29 +71,40 @@ async def crop_analysis(
     if not api_key:
         raise HTTPException(
             status_code=503,
-            detail="Crop analysis service not configured. Set GEMINI_API_KEY.",
+            detail="Crop analysis service not configured. Set GEMINI_API_KEY on the backend.",
         )
 
     import google.generativeai as genai
     from google.api_core.exceptions import ResourceExhausted
 
     genai.configure(api_key=api_key)
-    model = genai.GenerativeModel("gemini-1.5-flash")
+    model = genai.GenerativeModel(
+        "gemini-1.5-flash",
+        generation_config={"response_mime_type": "application/json"},
+    )
 
     prompt_text = (
-        "You are an agricultural expert assistant. Analyze this crop/plant photograph and provide an honest, "
-        "qualified assessment. Return ONLY valid JSON with no markdown or code fences. "
-        f"Context provided by the farmer: crop={crop_name}, location={location}, "
-        f"growth stage={growth_stage}, symptoms described={symptoms}.\n\n"
-        "The JSON must have exactly these keys: crop_identified (string or null), "
-        "condition_type (one of: healthy, suspected_disease, abiotic_stress, pest_damage, poor_image_quality, inconclusive), "
-        "suspected_issue (string or null), confidence_note (string - be honest about uncertainty), "
-        "abiotic_factors (array of strings), recommendations (array of 2-4 strings), "
-        "uncertainty_note (string - state what cannot be determined from photo alone), "
-        "needs_expert (boolean), image_quality (one of: good, fair, poor).\n\n"
-        "Important: Do NOT claim definitive diagnoses. Use language like 'suspected', 'possible', 'appears to'. "
-        "If the image is unclear or insufficient, say so. For any suspected disease or pest issue, always recommend "
-        "confirming with a local agricultural extension officer."
+        "You are an agricultural plant pathologist and agronomist. Analyze this crop/leaf photograph "
+        "and provide an honest, evidence-grounded assessment. Return strictly valid JSON with no markdown formatting.\n\n"
+        f"Farmer context: crop={crop_name or 'unspecified'}, location={location or 'unspecified'}, "
+        f"growth_stage={growth_stage or 'unspecified'}, symptoms_described={symptoms or 'unspecified'}.\n\n"
+        "Return a JSON object with exactly these fields:\n"
+        "- crop_identified: string or null\n"
+        "- condition_type: one of ['healthy', 'suspected_disease', 'abiotic_stress', 'pest_damage', 'poor_image_quality', 'inconclusive']\n"
+        "- suspected_issue: string or null\n"
+        "- visible_symptoms: array of strings\n"
+        "- potential_causes: array of strings\n"
+        "- confidence_note: string\n"
+        "- abiotic_factors: array of strings\n"
+        "- recommendations: array of 2-4 strings\n"
+        "- preventive_measures: array of 1-3 strings\n"
+        "- uncertainty_note: string\n"
+        "- needs_expert: boolean\n"
+        "- image_quality: one of ['good', 'fair', 'poor']\n\n"
+        "Guidelines:\n"
+        "1. Do not claim definitive diagnoses. Use phrasing like 'suspected', 'possible', 'symptoms consistent with'.\n"
+        "2. Do not recommend harsh chemical treatments without local testing. Recommend cultural and biological controls first.\n"
+        "3. If image is blurry or unclear, set condition_type to 'poor_image_quality' or 'inconclusive'."
     )
 
     image_part = {
@@ -98,12 +128,21 @@ async def crop_analysis(
         )
         result_text = response.text
     except ResourceExhausted:
-        raise HTTPException(status_code=429, detail="Crop analysis rate limit exceeded. Please try again later.")
+        raise HTTPException(status_code=429, detail="Crop analysis rate limit reached. Please wait a minute and retry.")
     except Exception as exc:
         raise HTTPException(status_code=502, detail=f"Crop analysis service error: {exc}")
 
+    clean_text = result_text.strip()
+    if clean_text.startswith("```"):
+        lines = clean_text.splitlines()
+        if lines and lines[0].startswith("```"):
+            lines = lines[1:]
+        if lines and lines[-1].startswith("```"):
+            lines = lines[:-1]
+        clean_text = "\n".join(lines).strip()
+
     try:
-        parsed = json.loads(result_text.strip())
+        parsed = json.loads(clean_text)
     except json.JSONDecodeError:
         raise HTTPException(
             status_code=502,
@@ -111,25 +150,28 @@ async def crop_analysis(
         )
 
     context_used: dict[str, Any] = {}
-    if crop_name is not None:
+    if crop_name:
         context_used["crop_name"] = crop_name
-    if location is not None:
+    if location:
         context_used["location"] = location
-    if growth_stage is not None:
+    if growth_stage:
         context_used["growth_stage"] = growth_stage
-    if symptoms is not None:
+    if symptoms:
         context_used["symptoms"] = symptoms
 
     return CropAnalysisResponse(
         crop_identified=parsed.get("crop_identified"),
-        condition_type=parsed["condition_type"],
+        condition_type=parsed.get("condition_type", "inconclusive"),
         suspected_issue=parsed.get("suspected_issue"),
-        confidence_note=parsed["confidence_note"],
+        visible_symptoms=parsed.get("visible_symptoms", []),
+        potential_causes=parsed.get("potential_causes", []),
+        confidence_note=parsed.get("confidence_note", "Visual inspection only."),
         abiotic_factors=parsed.get("abiotic_factors", []),
         recommendations=parsed.get("recommendations", []),
-        uncertainty_note=parsed["uncertainty_note"],
-        needs_expert=parsed["needs_expert"],
-        image_quality=parsed["image_quality"],
+        preventive_measures=parsed.get("preventive_measures", []),
+        uncertainty_note=parsed.get("uncertainty_note", "Visual inspection cannot substitute for laboratory tissue testing."),
+        needs_expert=bool(parsed.get("needs_expert", True)),
+        image_quality=parsed.get("image_quality", "fair"),
         provider="gemini-1.5-flash",
         context_used=context_used,
     )
