@@ -10,7 +10,6 @@ import {
   BookOpen,
   Camera,
   CheckCircle,
-  Clock,
   Database,
   FileText,
   HelpCircle,
@@ -25,7 +24,6 @@ import gsap from "gsap";
 import { Section } from "@/components/ui/Section";
 import { Reveal } from "@/lib/motion/Reveal";
 import { Spinner } from "@/components/ui/Spinner";
-import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { ApiError, saveObservation, submitCropAnalysis } from "@/lib/api/client";
@@ -115,7 +113,6 @@ export default function CropAnalysisPage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved_cloud" | "saved_local" | "error">("idle");
   const [observations, setObservations] = useState<StoredObservation[]>([]);
-  const [selectedHistoryItem, setSelectedHistoryItem] = useState<StoredObservation | null>(null);
 
   const resultRef = useRef<HTMLDivElement>(null);
 
@@ -282,10 +279,7 @@ export default function CropAnalysisPage() {
       writeStoredObservations(updated);
       return updated;
     });
-    if (selectedHistoryItem?.id === id) {
-      setSelectedHistoryItem(null);
-    }
-  }, [selectedHistoryItem]);
+  }, []);
 
   const analytics = useMemo(() => {
     const total = observations.length;
