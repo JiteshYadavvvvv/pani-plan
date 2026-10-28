@@ -128,7 +128,7 @@ export function WeatherWidget({
       </div>
       {today ? (
         <p className="mt-2 text-xs text-muted">
-          7-day rainfall approximated as today's forecast × 7 ({(today.precipitation_mm * 7).toFixed(1)} mm)
+          7-day rainfall approximated as today&apos;s forecast × 7 ({(today.precipitation_mm * 7).toFixed(1)} mm)
         </p>
       ) : null}
     </div>

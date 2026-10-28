@@ -222,16 +222,6 @@ export default function DashboardPage() {
     loadReferenceData();
   }, [loadReferenceData]);
 
-  useEffect(() => {
-    setFields(readFieldsFromStorage());
-    setHydrated(true);
-  }, []);
-
-  useEffect(() => {
-    if (!hydrated) return;
-    writeFieldsToStorage(fields);
-  }, [fields, hydrated]);
-
   const fetchForField = useCallback((field: DashboardField) => {
     setAdvisoryMap((prev) => ({ ...prev, [field.id]: "loading" }));
     const payload: AdvisoryRequest = {
@@ -251,11 +241,18 @@ export default function DashboardPage() {
   }, []);
 
   useEffect(() => {
-    if (!hydrated) return;
-    fields.forEach((field) => {
+    const loaded = readFieldsFromStorage();
+    setFields(loaded);
+    setHydrated(true);
+    loaded.forEach((field) => {
       fetchForField(field);
     });
-  }, [hydrated]);
+  }, [fetchForField]);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    writeFieldsToStorage(fields);
+  }, [fields, hydrated]);
 
   const handleAddField = useCallback(
     (values: FieldFormValues) => {

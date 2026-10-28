@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { clsx } from "clsx";
+import Image from "next/image";
 import { Camera, CheckCircle, Upload, X } from "lucide-react";
 import gsap from "gsap";
 import { Section } from "@/components/ui/Section";
@@ -224,9 +225,12 @@ export default function CropAnalysisPage() {
               >
                 {imagePreviewUrl && imageFile ? (
                   <div className="flex flex-col gap-3 p-4">
-                    <img
+                    <Image
                       src={imagePreviewUrl}
                       alt="Crop preview"
+                      width={400}
+                      height={192}
+                      unoptimized
                       className="max-h-48 w-full rounded object-contain"
                     />
                     <div className="flex items-center justify-between gap-3">
