@@ -28,7 +28,7 @@ class AdvisoryResponse(BaseModel):
     total_water_liters: float
     stress_level: Literal["low", "moderate", "high", "severe"]
     used_sample_climate: bool
-    is_sample_data: bool = True
+    is_sample_data: bool = False
 
 
 class CropOut(BaseModel):
@@ -48,7 +48,7 @@ class DistrictOut(BaseModel):
     dominant_soil: str
     baseline_water_stress_index: int
     primary_crops: list[str]
-    is_sample_data: bool = True
+    is_sample_data: bool = False
 
 
 class WaterStressMapPoint(BaseModel):
@@ -60,7 +60,7 @@ class WaterStressMapPoint(BaseModel):
     stress_index: int
     stress_level: Literal["low", "moderate", "high", "severe"]
     primary_crops: list[str]
-    is_sample_data: bool = True
+    is_sample_data: bool = False
 
 
 class BenchmarkRequest(BaseModel):

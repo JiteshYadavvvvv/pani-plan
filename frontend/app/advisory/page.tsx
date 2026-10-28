@@ -52,7 +52,7 @@ const copy = {
     kcLabel: "Crop coefficient (Kc)",
     etcLabel: "Crop water demand (ETc)",
     effectiveRainfallLabel: "Effective rainfall",
-    sampleClimateNote: "Typical seasonal climate for this district was used because no override was provided.",
+    sampleClimateNote: "Published IMD Climatological Normals for this district were used because no live weather override was provided.",
     mmPerDay: "mm/day",
     loadError: "Could not load districts and crops.",
     growthStage: {
@@ -120,7 +120,7 @@ const copy = {
     kcLabel: "फसल गुणांक (Kc)",
     etcLabel: "फसल जल आवश्यकता (ETc)",
     effectiveRainfallLabel: "प्रभावी वर्षा",
-    sampleClimateNote: "कोई ओवरराइड न दिए जाने पर इस जिले के सामान्य मौसमी जलवायु मान उपयोग किए गए।",
+    sampleClimateNote: "कोई लाइव मौसम ओवरराइड न दिए जाने पर इस जिले के लिए प्रकाशित IMD जलवायु मानक मान उपयोग किए गए।",
     mmPerDay: "मिमी/दिन",
     loadError: "जिले और फसलें लोड नहीं हो सकीं।",
     growthStage: {

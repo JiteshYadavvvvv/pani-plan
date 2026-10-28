@@ -11,11 +11,14 @@ import {
   Camera,
   CheckCircle,
   Database,
+  Droplets,
   FileText,
   HelpCircle,
   Leaf,
+  RefreshCw,
   ShieldAlert,
   ShieldCheck,
+  Stethoscope,
   Trash2,
   Upload,
   X,
@@ -26,8 +29,13 @@ import { Reveal } from "@/lib/motion/Reveal";
 import { Spinner } from "@/components/ui/Spinner";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
-import { ApiError, saveObservation, submitCropAnalysis } from "@/lib/api/client";
-import type { CropAnalysisResponse } from "@/lib/api/schemas";
+import {
+  ApiError,
+  fetchCropAnalysisDiagnostic,
+  saveObservation,
+  submitCropAnalysis,
+} from "@/lib/api/client";
+import type { CropAnalysisResponse, DiagnosticResponse } from "@/lib/api/schemas";
 
 const MAX_FILE_BYTES = 10 * 1024 * 1024;
 const STORAGE_KEY = "paaniplan-crop-observations";
@@ -100,7 +108,7 @@ function writeStoredObservations(records: StoredObservation[]): void {
 }
 
 export default function CropAnalysisPage() {
-  const [activeTab, setActiveTab] = useState<"assess" | "history" | "analytics">("assess");
+  const [activeTab, setActiveTab] = useState<"assess" | "history" | "analytics" | "diagnostics">("assess");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
   const [cropName, setCropName] = useState("");
@@ -113,6 +121,8 @@ export default function CropAnalysisPage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved_cloud" | "saved_local" | "error">("idle");
   const [observations, setObservations] = useState<StoredObservation[]>([]);
+  const [diagnosticInfo, setDiagnosticInfo] = useState<DiagnosticResponse | null>(null);
+  const [diagnosticLoading, setDiagnosticLoading] = useState(false);
 
   const resultRef = useRef<HTMLDivElement>(null);
 
@@ -140,6 +150,26 @@ export default function CropAnalysisPage() {
       tween.kill();
     };
   }, [result]);
+
+  const runDiagnostic = useCallback(() => {
+    setDiagnosticLoading(true);
+    fetchCropAnalysisDiagnostic()
+      .then((data) => {
+        setDiagnosticInfo(data);
+      })
+      .catch((err) => {
+        setDiagnosticInfo({
+          configured: false,
+          status: "unreachable",
+          message: err instanceof Error ? err.message : "Failed to connect to backend diagnostic route",
+          model: "gemini-1.5-flash",
+          masked_key: "None",
+        });
+      })
+      .finally(() => {
+        setDiagnosticLoading(false);
+      });
+  }, []);
 
   const handleFileChange = useCallback(
     (file: File | null | undefined) => {
@@ -205,7 +235,10 @@ export default function CropAnalysisPage() {
         setResult(data);
       } catch (err) {
         if (err instanceof ApiError) {
-          if (err.kind === "config" || err.status === 503) {
+          if (err.serverMessage) {
+            setErrorKind("generic");
+            setErrorMessage(err.serverMessage);
+          } else if (err.kind === "config" || err.status === 503) {
             setErrorKind("config");
             setErrorMessage(
               "Gemini API is not configured on the backend. Please add GEMINI_API_KEY in the Vercel backend environment variables and redeploy."
@@ -215,10 +248,10 @@ export default function CropAnalysisPage() {
             setErrorMessage("Gemini API rate limit reached. Please wait a minute and try again.");
           } else if (err.status === 400) {
             setErrorKind("generic");
-            setErrorMessage("Invalid image format. Supported formats: JPEG, PNG, WebP.");
+            setErrorMessage("Invalid image format or parameters. Supported formats: JPEG, PNG, WebP.");
           } else {
             setErrorKind("generic");
-            setErrorMessage("Backend analysis service error. Please try again or check server logs.");
+            setErrorMessage("Backend analysis service error. Please run the diagnostics tab or check server logs.");
           }
         } else {
           setErrorKind("generic");
@@ -385,6 +418,22 @@ export default function CropAnalysisPage() {
               <BarChart3 className="h-4 w-4" />
               Health Analytics
             </button>
+            <button
+              type="button"
+              onClick={() => {
+                setActiveTab("diagnostics");
+                if (!diagnosticInfo) runDiagnostic();
+              }}
+              className={clsx(
+                "flex items-center gap-2 rounded-t-lg px-4 py-2.5 text-sm font-medium transition-colors",
+                activeTab === "diagnostics"
+                  ? "bg-ivory text-forest font-semibold"
+                  : "text-sage-light hover:bg-forest-dark/40 hover:text-ivory"
+              )}
+            >
+              <Stethoscope className="h-4 w-4" />
+              Backend Diagnostics
+            </button>
           </div>
         </Reveal>
       </Section>
@@ -511,16 +560,16 @@ export default function CropAnalysisPage() {
                       <div>
                         <p className="text-sm font-semibold text-stress-severe">Assessment Notice</p>
                         <p className="mt-1 text-xs leading-relaxed text-ink">{errorMessage}</p>
-                        {errorKind === "config" ? (
-                          <div className="mt-3 rounded border border-earth-light bg-surface p-2.5 text-xs text-muted">
-                            <p className="font-semibold text-ink">How to configure:</p>
-                            <ol className="mt-1 list-inside list-decimal space-y-0.5">
-                              <li>Get an API key from Google AI Studio.</li>
-                              <li>In your Vercel project settings, add: <code className="rounded bg-ivory px-1">GEMINI_API_KEY</code>.</li>
-                              <li>Redeploy your backend.</li>
-                            </ol>
-                          </div>
-                        ) : null}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setActiveTab("diagnostics");
+                            runDiagnostic();
+                          }}
+                          className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-forest underline"
+                        >
+                          Check Backend Diagnostic Status &rarr;
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -616,6 +665,24 @@ export default function CropAnalysisPage() {
                     </div>
                   ) : null}
 
+                  {result.affected_parts && result.affected_parts.length > 0 ? (
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-wide text-muted">
+                        Affected Plant Parts
+                      </p>
+                      <div className="mt-1.5 flex flex-wrap gap-1.5">
+                        {result.affected_parts.map((part, i) => (
+                          <span
+                            key={i}
+                            className="rounded border border-earth-light bg-sage-light/60 px-2 py-0.5 text-xs text-forest-dark"
+                          >
+                            {part}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+
                   {result.potential_causes && result.potential_causes.length > 0 ? (
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-wide text-muted">
@@ -629,9 +696,22 @@ export default function CropAnalysisPage() {
                     </div>
                   ) : null}
 
+                  {result.alternative_explanations && result.alternative_explanations.length > 0 ? (
+                    <div className="rounded border border-earth-light bg-ivory/60 p-3">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-muted">
+                        Alternative Possibilities
+                      </p>
+                      <ul className="mt-1 list-inside list-disc space-y-0.5 text-xs text-ink">
+                        {result.alternative_explanations.map((alt, i) => (
+                          <li key={i}>{alt}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+
                   <div className="rounded border border-forest/20 bg-ivory p-4">
                     <p className="text-xs font-semibold uppercase tracking-wide text-muted">
-                      Confidence &amp; Diagnostic Note
+                      Confidence &amp; Diagnostic Note ({result.confidence_level.toUpperCase()})
                     </p>
                     <p className="mt-1 text-sm leading-relaxed text-forest-dark">
                       {result.confidence_note}
@@ -682,6 +762,29 @@ export default function CropAnalysisPage() {
                       <ul className="mt-1.5 list-inside list-disc space-y-1 text-sm text-ink">
                         {result.preventive_measures.map((prev, i) => (
                           <li key={i}>{prev}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+
+                  {result.irrigation_guidance ? (
+                    <div className="rounded border border-forest/20 bg-sage-light/40 p-3.5">
+                      <div className="flex items-center gap-2">
+                        <Droplets className="h-4 w-4 text-forest" />
+                        <p className="text-xs font-bold uppercase tracking-wider text-forest-dark">
+                          Irrigation &amp; Moisture Advice
+                        </p>
+                      </div>
+                      <p className="mt-1 text-sm text-ink">{result.irrigation_guidance}</p>
+                    </div>
+                  ) : null}
+
+                  {result.follow_up_advice && result.follow_up_advice.length > 0 ? (
+                    <div className="rounded border border-earth-light bg-surface p-3 text-xs text-muted">
+                      <p className="font-semibold text-ink">Follow-Up Suggestions:</p>
+                      <ul className="mt-1 list-inside list-disc space-y-0.5">
+                        {result.follow_up_advice.map((advice, i) => (
+                          <li key={i}>{advice}</li>
                         ))}
                       </ul>
                     </div>
@@ -926,6 +1029,66 @@ export default function CropAnalysisPage() {
                     );
                   })}
                 </div>
+              )}
+            </div>
+          </div>
+        ) : null}
+
+        {activeTab === "diagnostics" ? (
+          <div className="mx-auto max-w-2xl rounded-lg border border-earth-light bg-surface p-6 sm:p-8">
+            <div className="flex items-center justify-between border-b border-earth-light/60 pb-4">
+              <div>
+                <h2 className="font-display text-xl font-semibold text-ink">
+                  Gemini API Health &amp; Diagnostic
+                </h2>
+                <p className="text-xs text-muted">
+                  Live verification of backend API key configuration and Google Generative Language service reachability.
+                </p>
+              </div>
+              <Button variant="secondary" size="sm" onClick={runDiagnostic} disabled={diagnosticLoading}>
+                <RefreshCw className={clsx("h-4 w-4", diagnosticLoading && "animate-spin")} />
+                Run Test
+              </Button>
+            </div>
+
+            <div className="mt-6 flex flex-col gap-4">
+              {diagnosticLoading ? (
+                <div className="flex min-h-[140px] items-center justify-center">
+                  <Spinner className="h-7 w-7" />
+                </div>
+              ) : diagnosticInfo ? (
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center justify-between rounded border border-earth-light bg-ivory p-3.5">
+                    <span className="text-xs font-semibold text-muted">Configuration Status</span>
+                    <Badge tone={diagnosticInfo.configured ? "forest" : "severe"}>
+                      {diagnosticInfo.configured ? "Key Configured" : "Missing Key"}
+                    </Badge>
+                  </div>
+
+                  <div className="flex items-center justify-between rounded border border-earth-light bg-ivory p-3.5">
+                    <span className="text-xs font-semibold text-muted">Connection Status</span>
+                    <Badge tone={diagnosticInfo.status === "connected" ? "forest" : "severe"}>
+                      {diagnosticInfo.status.toUpperCase()}
+                    </Badge>
+                  </div>
+
+                  <div className="flex items-center justify-between rounded border border-earth-light bg-ivory p-3.5">
+                    <span className="text-xs font-semibold text-muted">Active Model</span>
+                    <span className="font-mono text-xs font-semibold text-ink">{diagnosticInfo.model}</span>
+                  </div>
+
+                  <div className="flex items-center justify-between rounded border border-earth-light bg-ivory p-3.5">
+                    <span className="text-xs font-semibold text-muted">Key Preview</span>
+                    <span className="font-mono text-xs text-muted">{diagnosticInfo.masked_key}</span>
+                  </div>
+
+                  <div className="rounded border border-earth-light bg-surface p-4 text-xs leading-relaxed">
+                    <p className="font-semibold text-ink">Diagnostic Message:</p>
+                    <p className="mt-1 text-muted">{diagnosticInfo.message}</p>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-sm text-muted">Click &quot;Run Test&quot; to inspect connection status.</p>
               )}
             </div>
           </div>

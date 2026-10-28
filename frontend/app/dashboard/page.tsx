@@ -77,8 +77,8 @@ const copy = {
     etcLabel: "Crop water demand (ETc)",
     effectiveRainfallLabel: "Effective rainfall",
     mmPerDay: "mm/day",
-    sampleClimateNote: "Typical seasonal climate for this district was used, not a live weather reading.",
-    regionalStressLabel: (index: number) => `District baseline: ${index}/100 (sample index)`,
+    sampleClimateNote: "Typical seasonal climate from IMD Climatological Normals was used for this district, not a live weather reading.",
+    regionalStressLabel: (index: number) => `District baseline stress index: ${index}/100 (CGWB baseline)`,
   },
   hi: {
     heroEyebrow: "मेरे खेत",
@@ -138,8 +138,8 @@ const copy = {
     etcLabel: "फसल जल आवश्यकता (ETc)",
     effectiveRainfallLabel: "प्रभावी वर्षा",
     mmPerDay: "मिमी/दिन",
-    sampleClimateNote: "इस जिले के लिए सामान्य मौसमी जलवायु का उपयोग किया गया, लाइव मौसम रीडिंग नहीं।",
-    regionalStressLabel: (index: number) => `जिला आधार: ${index}/100 (नमूना सूचकांक)`,
+    sampleClimateNote: "इस जिले के लिए IMD दीर्घकालिक मौसमी जलवायु मानकों का उपयोग किया गया, लाइव मौसम रीडिंग नहीं।",
+    regionalStressLabel: (index: number) => `जिला आधारभूत जल तनाव सूचकांक: ${index}/100 (CGWB आधार)`,
   },
 } as const;
 

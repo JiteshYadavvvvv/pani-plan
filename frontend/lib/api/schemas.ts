@@ -31,7 +31,7 @@ export const advisoryResponseSchema = z.object({
   total_water_liters: z.number(),
   stress_level: stressLevelSchema,
   used_sample_climate: z.boolean(),
-  is_sample_data: z.boolean(),
+  is_sample_data: z.boolean().default(false),
 });
 export type AdvisoryResponse = z.infer<typeof advisoryResponseSchema>;
 
@@ -53,7 +53,7 @@ export const districtOutSchema = z.object({
   dominant_soil: soilTypeSchema,
   baseline_water_stress_index: z.number(),
   primary_crops: z.array(z.string()),
-  is_sample_data: z.boolean(),
+  is_sample_data: z.boolean().default(false),
 });
 export type DistrictOut = z.infer<typeof districtOutSchema>;
 
@@ -66,7 +66,7 @@ export const waterStressMapPointSchema = z.object({
   stress_index: z.number(),
   stress_level: stressLevelSchema,
   primary_crops: z.array(z.string()),
-  is_sample_data: z.boolean(),
+  is_sample_data: z.boolean().default(false),
 });
 export type WaterStressMapPoint = z.infer<typeof waterStressMapPointSchema>;
 
@@ -97,23 +97,97 @@ export const benchmarkResponseSchema = z.object({
 });
 export type BenchmarkResponse = z.infer<typeof benchmarkResponseSchema>;
 
+export const diagnosticResponseSchema = z.object({
+  configured: z.boolean(),
+  status: z.string(),
+  message: z.string(),
+  model: z.string().default("gemini-1.5-flash"),
+  masked_key: z.string().default("None"),
+});
+export type DiagnosticResponse = z.infer<typeof diagnosticResponseSchema>;
+
 export const cropAnalysisResponseSchema = z.object({
   crop_identified: z.string().nullable(),
-  condition_type: z.enum(["healthy", "suspected_disease", "abiotic_stress", "pest_damage", "poor_image_quality", "inconclusive"]),
+  condition_type: z.enum([
+    "healthy",
+    "suspected_disease",
+    "abiotic_stress",
+    "pest_damage",
+    "poor_image_quality",
+    "inconclusive",
+  ]),
   suspected_issue: z.string().nullable(),
   visible_symptoms: z.array(z.string()).default([]),
+  affected_parts: z.array(z.string()).default([]),
   potential_causes: z.array(z.string()).default([]),
+  alternative_explanations: z.array(z.string()).default([]),
+  confidence_level: z.enum(["high", "moderate", "low", "uncertain"]).default("uncertain"),
   confidence_note: z.string(),
   abiotic_factors: z.array(z.string()).default([]),
   recommendations: z.array(z.string()).default([]),
   preventive_measures: z.array(z.string()).default([]),
+  irrigation_guidance: z.string().nullable().optional(),
+  follow_up_advice: z.array(z.string()).default([]),
   uncertainty_note: z.string(),
-  needs_expert: z.boolean(),
-  image_quality: z.enum(["good", "fair", "poor"]),
-  provider: z.string(),
+  needs_expert: z.boolean().default(true),
+  image_quality: z.enum(["good", "fair", "poor"]).default("fair"),
+  provider: z.string().default("gemini-1.5-flash"),
   context_used: z.record(z.string()).default({}),
 });
 export type CropAnalysisResponse = z.infer<typeof cropAnalysisResponseSchema>;
+
+export const fishAnalysisResponseSchema = z.object({
+  species_identified: z.string().nullable(),
+  common_name: z.string().nullable(),
+  scientific_name: z.string().nullable(),
+  health_condition: z.enum([
+    "healthy",
+    "suspected_disease",
+    "parasitic_infection",
+    "water_stress_signs",
+    "inconclusive",
+  ]),
+  suspected_issue: z.string().nullable(),
+  visible_characteristics: z.array(z.string()).default([]),
+  potential_causes: z.array(z.string()).default([]),
+  confidence_level: z.enum(["high", "moderate", "low", "uncertain"]).default("uncertain"),
+  confidence_note: z.string(),
+  recommendations: z.array(z.string()).default([]),
+  preventive_measures: z.array(z.string()).default([]),
+  water_quality_guidance: z.string().nullable().optional(),
+  uncertainty_note: z.string(),
+  needs_expert: z.boolean().default(true),
+  image_quality: z.enum(["good", "fair", "poor"]).default("fair"),
+  provider: z.string().default("gemini-1.5-flash"),
+  context_used: z.record(z.string()).default({}),
+});
+export type FishAnalysisResponse = z.infer<typeof fishAnalysisResponseSchema>;
+
+export const waterQualityStandardSchema = z.object({
+  parameter: z.string(),
+  optimal_range: z.string(),
+  acceptable_range: z.string(),
+  critical_threshold: z.string(),
+  unit: z.string(),
+  source: z.string(),
+});
+export type WaterQualityStandard = z.infer<typeof waterQualityStandardSchema>;
+
+export const waterQualityEvaluationSchema = z.object({
+  parameter: z.string(),
+  measured_value: z.number(),
+  status: z.enum(["optimal", "acceptable", "critical"]),
+  guidance: z.string(),
+});
+export type WaterQualityEvaluation = z.infer<typeof waterQualityEvaluationSchema>;
+
+export const waterQualityCheckResponseSchema = z.object({
+  overall_status: z.enum(["optimal", "acceptable", "critical", "insufficient_data"]),
+  evaluations: z.array(waterQualityEvaluationSchema),
+  corrective_actions: z.array(z.string()),
+  source: z.string(),
+});
+export type WaterQualityCheckResponse = z.infer<typeof waterQualityCheckResponseSchema>;
 
 export const weatherCurrentSchema = z.object({
   temperature_c: z.number(),

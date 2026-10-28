@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass, field
 from typing import Literal
 
@@ -91,4 +93,4 @@ DISTRICTS: dict[str, DistrictProfile] = {
     "kota": DistrictProfile("kota", "Kota", "Rajasthan", 25.2138, 75.8648, "sandy", 35, 19, 750, 62, ["wheat", "soybean", "mustard"]),
 }
 
-IS_SAMPLE_DATA = True
+IS_SAMPLE_DATA = False
