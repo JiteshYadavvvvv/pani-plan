@@ -15,6 +15,7 @@ const navLinks: { href: string; labelKey: TranslationKey }[] = [
   { href: "/", labelKey: "nav.home" },
   { href: "/how-it-works", labelKey: "nav.howItWorks" },
   { href: "/advisory", labelKey: "nav.advisory" },
+  { href: "/crop-analysis", labelKey: "nav.cropAnalysis" },
   { href: "/lab", labelKey: "nav.lab" },
   { href: "/about", labelKey: "nav.about" },
 ];

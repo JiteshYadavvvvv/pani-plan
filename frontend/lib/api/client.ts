@@ -3,16 +3,23 @@ import {
   advisoryResponseSchema,
   benchmarkRequestSchema,
   benchmarkResponseSchema,
+  cropAnalysisResponseSchema,
   cropOutSchema,
   districtOutSchema,
+  observationOutSchema,
   waterStressMapPointSchema,
+  weatherResponseSchema,
   type AdvisoryRequest,
   type AdvisoryResponse,
   type BenchmarkRequest,
   type BenchmarkResponse,
+  type CropAnalysisResponse,
   type CropOut,
   type DistrictOut,
+  type ObservationCreate,
+  type ObservationOut,
   type WaterStressMapPoint,
+  type WeatherResponse,
 } from "./schemas";
 import { z } from "zod";
 
@@ -107,4 +114,46 @@ export function fetchBenchmark(payload: BenchmarkRequest): Promise<BenchmarkResp
     },
     30_000
   );
+}
+
+export async function submitCropAnalysis(formData: FormData): Promise<CropAnalysisResponse> {
+  if (!API_BASE_URL) throw new ApiError("config", 0);
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 30_000);
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE_URL}/api/crop-analysis`, {
+      method: "POST",
+      body: formData,
+      signal: controller.signal,
+    });
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "AbortError") throw new ApiError("timeout", 0);
+    throw new ApiError("network", 0);
+  } finally {
+    clearTimeout(timer);
+  }
+  if (response.status === 503) throw new ApiError("config", 503);
+  if (response.status === 429) throw new ApiError("server", 429);
+  if (!response.ok) throw new ApiError("server", response.status);
+  const json = await response.json();
+  const parsed = cropAnalysisResponseSchema.safeParse(json);
+  if (!parsed.success) throw new ApiError("validation", response.status);
+  return parsed.data;
+}
+
+export function fetchWeather(districtId: string): Promise<WeatherResponse> {
+  return requestJson(`/api/weather?district_id=${encodeURIComponent(districtId)}`, weatherResponseSchema);
+}
+
+export async function saveObservation(payload: ObservationCreate): Promise<ObservationOut> {
+  return requestJson("/api/observations", observationOutSchema, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}
+
+export function fetchObservations(): Promise<ObservationOut[]> {
+  return requestJson("/api/observations", z.array(observationOutSchema));
 }

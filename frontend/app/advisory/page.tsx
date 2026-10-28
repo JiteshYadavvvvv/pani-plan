@@ -11,6 +11,7 @@ import { apiErrorMessageKey } from "@/lib/api/errorMessage";
 import type { AdvisoryRequest, AdvisoryResponse, CropOut, DistrictOut } from "@/lib/api/schemas";
 import { AdvisoryForm } from "./_components/AdvisoryForm";
 import { ResultPanel, type ResultStatus } from "./_components/ResultPanel";
+import { WeatherWidget } from "./_components/WeatherWidget";
 
 const copy = {
   en: {
@@ -166,6 +167,8 @@ export default function AdvisoryPage() {
   const [submitError, setSubmitError] = useState<string | undefined>(undefined);
   const [submitting, setSubmitting] = useState(false);
   const [lastValues, setLastValues] = useState<AdvisoryRequest | null>(null);
+  const [selectedDistrictId, setSelectedDistrictId] = useState<string | undefined>(undefined);
+  const [weatherFill, setWeatherFill] = useState<{ tmax: number; tmin: number; rain: number } | null>(null);
 
   const loadReferenceData = useCallback(() => {
     setReferenceData({ status: "loading" });
@@ -234,14 +237,22 @@ export default function AdvisoryPage() {
         ) : (
           <Reveal>
             <div className="grid gap-8 lg:grid-cols-[1fr_1fr] lg:items-start">
-              <div className="rounded-lg border border-earth-light bg-surface p-6 sm:p-8">
-                <AdvisoryForm
-                  districts={referenceData.districts}
-                  crops={referenceData.crops}
-                  submitting={submitting}
-                  onSubmit={runAdvisory}
-                  copy={c}
+              <div className="flex flex-col gap-6">
+                <WeatherWidget
+                  districtId={selectedDistrictId}
+                  onUseLiveWeather={(tmax, tmin, rain) => setWeatherFill({ tmax, tmin, rain })}
                 />
+                <div className="rounded-lg border border-earth-light bg-surface p-6 sm:p-8">
+                  <AdvisoryForm
+                    districts={referenceData.districts}
+                    crops={referenceData.crops}
+                    submitting={submitting}
+                    onSubmit={runAdvisory}
+                    copy={c}
+                    onDistrictChange={setSelectedDistrictId}
+                    weatherFill={weatherFill}
+                  />
+                </div>
               </div>
               <ResultPanel
                 status={resultStatus}

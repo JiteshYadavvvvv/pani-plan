@@ -96,3 +96,67 @@ export const benchmarkResponseSchema = z.object({
   workload_size: z.number(),
 });
 export type BenchmarkResponse = z.infer<typeof benchmarkResponseSchema>;
+
+export const cropAnalysisResponseSchema = z.object({
+  crop_identified: z.string().nullable(),
+  condition_type: z.enum(["healthy", "suspected_disease", "abiotic_stress", "pest_damage", "poor_image_quality", "inconclusive"]),
+  suspected_issue: z.string().nullable(),
+  confidence_note: z.string(),
+  abiotic_factors: z.array(z.string()),
+  recommendations: z.array(z.string()),
+  uncertainty_note: z.string(),
+  needs_expert: z.boolean(),
+  image_quality: z.enum(["good", "fair", "poor"]),
+  provider: z.string(),
+  context_used: z.record(z.string()),
+});
+export type CropAnalysisResponse = z.infer<typeof cropAnalysisResponseSchema>;
+
+export const weatherCurrentSchema = z.object({
+  temperature_c: z.number(),
+  precipitation_mm: z.number(),
+  weathercode: z.number(),
+  wind_speed_kmh: z.number(),
+  observed_at: z.string(),
+});
+
+export const weatherForecastDaySchema = z.object({
+  date: z.string(),
+  temp_max_c: z.number(),
+  temp_min_c: z.number(),
+  precipitation_mm: z.number(),
+  weathercode: z.number(),
+});
+
+export const weatherResponseSchema = z.object({
+  district_id: z.string(),
+  district_name: z.string(),
+  lat: z.number(),
+  lng: z.number(),
+  current: weatherCurrentSchema,
+  forecast: z.array(weatherForecastDaySchema),
+  source: z.string(),
+  cached: z.boolean(),
+  fetched_at: z.string(),
+});
+export type WeatherResponse = z.infer<typeof weatherResponseSchema>;
+
+export const observationCreateSchema = z.object({
+  field_label: z.string().min(1),
+  district_id: z.string().min(1),
+  crop_id: z.string().min(1),
+  growth_stage: z.string(),
+  advisory_result: z.record(z.unknown()),
+  crop_analysis_result: z.record(z.unknown()).nullable().optional(),
+  notes: z.string().optional(),
+});
+export type ObservationCreate = z.infer<typeof observationCreateSchema>;
+
+export const observationOutSchema = z.object({
+  id: z.string(),
+  field_label: z.string(),
+  district_id: z.string(),
+  crop_id: z.string(),
+  created_at: z.string(),
+});
+export type ObservationOut = z.infer<typeof observationOutSchema>;

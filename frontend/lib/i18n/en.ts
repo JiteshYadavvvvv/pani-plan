@@ -5,6 +5,7 @@ const en = {
   "nav.home": "Home",
   "nav.dashboard": "Dashboard",
   "nav.advisory": "Advisory",
+  "nav.cropAnalysis": "Crop Health",
   "nav.explore": "Explore",
   "nav.map": "Water Map",
   "nav.lab": "Parallel Lab",

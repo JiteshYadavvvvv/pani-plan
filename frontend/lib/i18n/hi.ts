@@ -7,6 +7,7 @@ const hi: Record<TranslationKey, string> = {
   "nav.home": "होम",
   "nav.dashboard": "डैशबोर्ड",
   "nav.advisory": "सलाह",
+  "nav.cropAnalysis": "फसल स्वास्थ्य",
   "nav.explore": "अन्वेषण",
   "nav.map": "जल मानचित्र",
   "nav.lab": "पैरलल लैब",

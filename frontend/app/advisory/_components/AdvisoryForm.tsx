@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronDown, Sprout } from "lucide-react";
@@ -60,12 +60,16 @@ export function AdvisoryForm({
   submitting,
   onSubmit,
   copy,
+  onDistrictChange,
+  weatherFill,
 }: {
   districts: DistrictOut[];
   crops: CropOut[];
   submitting: boolean;
   onSubmit: (values: AdvisoryRequest) => void;
   copy: AdvisoryFormCopy;
+  onDistrictChange?: (id: string) => void;
+  weatherFill?: { tmax: number; tmin: number; rain: number } | null;
 }) {
   const [showAdvanced, setShowAdvanced] = useState(false);
 
@@ -73,6 +77,7 @@ export function AdvisoryForm({
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<AdvisoryRequest>({
     resolver: zodResolver(advisoryRequestSchema),
@@ -81,6 +86,18 @@ export function AdvisoryForm({
   });
 
   const selectedDistrictId = watch("district_id");
+
+  useEffect(() => {
+    if (onDistrictChange) onDistrictChange(selectedDistrictId);
+  }, [selectedDistrictId, onDistrictChange]);
+
+  useEffect(() => {
+    if (!weatherFill) return;
+    setValue("manual_tmax_c", weatherFill.tmax);
+    setValue("manual_tmin_c", weatherFill.tmin);
+    setValue("manual_rainfall_last_7_days_mm", weatherFill.rain);
+    setShowAdvanced(true);
+  }, [weatherFill, setValue]);
 
   const orderedCrops = useMemo(() => {
     const district = districts.find((candidate) => candidate.district_id === selectedDistrictId);
