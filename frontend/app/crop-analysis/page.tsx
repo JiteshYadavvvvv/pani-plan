@@ -248,10 +248,10 @@ export default function CropAnalysisPage() {
             setErrorMessage("Gemini API rate limit reached. Please wait a minute and try again.");
           } else if (err.status === 400) {
             setErrorKind("generic");
-            setErrorMessage("Invalid image format or parameters. Supported formats: JPEG, PNG, WebP.");
+            setErrorMessage(err.serverMessage || "Invalid image format or parameters. Supported formats: JPEG, PNG, WebP.");
           } else {
             setErrorKind("generic");
-            setErrorMessage("Backend analysis service error. Please run the diagnostics tab or check server logs.");
+            setErrorMessage(err.serverMessage || "Backend analysis service error. Please run the diagnostics tab or check server logs.");
           }
         } else {
           setErrorKind("generic");

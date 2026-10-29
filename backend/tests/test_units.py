@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+import json
 import math
 import os
 import random
 import sys
 import types
 import unittest
+import urllib.error
 
 if "fastapi" not in sys.modules:
     try:
@@ -239,6 +241,20 @@ class TestGeminiService(unittest.TestCase):
             if old_env is not None:
                 os.environ["GEMINI_API_KEY"] = old_env
 
+    def test_masked_key_configured(self):
+        old_env = os.environ.get("GEMINI_API_KEY")
+        try:
+            os.environ["GEMINI_API_KEY"] = "AIzaSyDummyKeyForTestingPurposes1234"
+            masked = get_masked_key()
+            self.assertTrue(masked.startswith("AIzaSy"))
+            self.assertTrue(masked.endswith("1234"))
+            self.assertIn("...", masked)
+        finally:
+            if old_env is not None:
+                os.environ["GEMINI_API_KEY"] = old_env
+            elif "GEMINI_API_KEY" in os.environ:
+                del os.environ["GEMINI_API_KEY"]
+
     def test_call_multimodal_raises_when_no_key(self):
         old_env = os.environ.get("GEMINI_API_KEY")
         try:
@@ -250,6 +266,114 @@ class TestGeminiService(unittest.TestCase):
         finally:
             if old_env is not None:
                 os.environ["GEMINI_API_KEY"] = old_env
+
+    def test_connection_success_with_mock(self):
+        from unittest.mock import patch, MagicMock
+        old_env = os.environ.get("GEMINI_API_KEY")
+        try:
+            os.environ["GEMINI_API_KEY"] = "AIzaSyTestKey123"
+            mock_resp = MagicMock()
+            mock_resp.read.return_value = json.dumps({
+                "candidates": [{"content": {"parts": [{"text": "Hello OK"}]}}]
+            }).encode("utf-8")
+            mock_resp.__enter__.return_value = mock_resp
+            mock_resp.__exit__.return_value = None
+
+            with patch("urllib.request.urlopen", return_value=mock_resp):
+                status = test_gemini_connection()
+                self.assertTrue(status["configured"])
+                self.assertEqual(status["status"], "connected")
+                self.assertIn("Successfully verified", status["message"])
+        finally:
+            if old_env is not None:
+                os.environ["GEMINI_API_KEY"] = old_env
+            elif "GEMINI_API_KEY" in os.environ:
+                del os.environ["GEMINI_API_KEY"]
+
+    def test_connection_invalid_key_400(self):
+        from unittest.mock import patch
+        import io
+        old_env = os.environ.get("GEMINI_API_KEY")
+        try:
+            os.environ["GEMINI_API_KEY"] = "AIzaSyInvalidKey"
+            err_json = json.dumps({"error": {"message": "API key not valid. Please pass a valid API key."}}).encode("utf-8")
+            http_err = urllib.error.HTTPError(
+                "https://generativelanguage.googleapis.com",
+                400,
+                "Bad Request",
+                {},
+                io.BytesIO(err_json)
+            )
+
+            with patch("urllib.request.urlopen", side_effect=http_err):
+                status = test_gemini_connection()
+                self.assertTrue(status["configured"])
+                self.assertEqual(status["status"], "invalid_key")
+                self.assertIn("invalid or restricted", status["message"])
+        finally:
+            if old_env is not None:
+                os.environ["GEMINI_API_KEY"] = old_env
+            elif "GEMINI_API_KEY" in os.environ:
+                del os.environ["GEMINI_API_KEY"]
+
+    def test_connection_all_404_model_not_found(self):
+        from unittest.mock import patch
+        import io
+        old_env = os.environ.get("GEMINI_API_KEY")
+        try:
+            os.environ["GEMINI_API_KEY"] = "AIzaSyMissingModelKey"
+            err_json = json.dumps({"error": {"message": "models/gemini-1.5-flash is not found"}}).encode("utf-8")
+            http_err = urllib.error.HTTPError(
+                "https://generativelanguage.googleapis.com",
+                404,
+                "Not Found",
+                {},
+                io.BytesIO(err_json)
+            )
+
+            with patch("urllib.request.urlopen", side_effect=http_err):
+                status = test_gemini_connection()
+                self.assertTrue(status["configured"])
+                self.assertEqual(status["status"], "model_not_found")
+                self.assertIn("No compatible model found", status["message"])
+        finally:
+            if old_env is not None:
+                os.environ["GEMINI_API_KEY"] = old_env
+            elif "GEMINI_API_KEY" in os.environ:
+                del os.environ["GEMINI_API_KEY"]
+
+    def test_call_multimodal_success_mock(self):
+        from unittest.mock import patch, MagicMock
+        old_env = os.environ.get("GEMINI_API_KEY")
+        try:
+            os.environ["GEMINI_API_KEY"] = "AIzaSyMultimodalTestKey"
+            mock_resp = MagicMock()
+            response_json = {
+                "crop_identified": "Mustard",
+                "condition_type": "healthy",
+                "suspected_issue": None,
+                "confidence_level": "high",
+                "confidence_note": "No chlorosis detected.",
+                "uncertainty_note": "Field lab test recommended.",
+                "image_quality": "good",
+                "needs_expert": False,
+            }
+            mock_resp.read.return_value = json.dumps({
+                "candidates": [{"content": {"parts": [{"text": json.dumps(response_json)}]}}]
+            }).encode("utf-8")
+            mock_resp.__enter__.return_value = mock_resp
+            mock_resp.__exit__.return_value = None
+
+            with patch("urllib.request.urlopen", return_value=mock_resp):
+                result, model = call_gemini_multimodal("test prompt", b"imgbytes", "image/jpeg")
+                self.assertEqual(result["crop_identified"], "Mustard")
+                self.assertEqual(result["condition_type"], "healthy")
+                self.assertTrue(len(model) > 0)
+        finally:
+            if old_env is not None:
+                os.environ["GEMINI_API_KEY"] = old_env
+            elif "GEMINI_API_KEY" in os.environ:
+                del os.environ["GEMINI_API_KEY"]
 
 
 class TestFisheriesStandards(unittest.TestCase):
