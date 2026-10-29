@@ -9,6 +9,8 @@ import urllib.request
 from typing import Any
 
 API_VERSIONS = ["v1beta", "v1"]
+EXCLUDED_PATTERNS = ["tts", "audio", "embed", "imagen", "veo", "chirp", "aqa", "bison", "realtime"]
+
 KNOWN_VISION_MODELS = [
     "gemini-2.0-flash",
     "gemini-1.5-flash",
@@ -38,6 +40,11 @@ def get_masked_key() -> str:
     if len(key) <= 8:
         return "****"
     return f"{key[:6]}...{key[-4:]}"
+
+
+def _is_compatible_model(name: str) -> bool:
+    lower = name.lower()
+    return not any(pat in lower for pat in EXCLUDED_PATTERNS)
 
 
 def _get_preferred_models() -> list[str]:
@@ -71,7 +78,7 @@ def _list_available_models(api_key: str, version: str) -> list[str]:
                 name = item.get("name", "")
                 if name.startswith("models/"):
                     name = name[7:]
-                if name:
+                if name and _is_compatible_model(name):
                     available.append(name)
         return available
     except Exception:
@@ -81,19 +88,31 @@ def _list_available_models(api_key: str, version: str) -> list[str]:
 def _sort_models_by_preference(available: list[str]) -> list[str]:
     def rank(m: str) -> int:
         lower = m.lower()
-        if "2.0-flash" in lower:
+        if lower == "gemini-2.0-flash":
             return 0
-        if "1.5-flash-latest" in lower:
+        if lower == "gemini-1.5-flash":
             return 1
-        if "1.5-flash" in lower:
+        if lower == "gemini-1.5-flash-latest":
             return 2
-        if "flash" in lower:
+        if lower == "gemini-1.5-flash-002":
             return 3
-        if "1.5-pro" in lower:
+        if lower == "gemini-1.5-flash-001":
             return 4
-        if "pro" in lower:
+        if lower == "gemini-2.0-flash-lite":
             return 5
-        return 10
+        if lower == "gemini-1.5-pro":
+            return 6
+        if lower == "gemini-1.5-pro-latest":
+            return 7
+        if "2.0-flash" in lower:
+            return 8
+        if "1.5-flash" in lower:
+            return 9
+        if "flash" in lower:
+            return 10
+        if "pro" in lower:
+            return 11
+        return 20
 
     return sorted(available, key=rank)
 
@@ -134,19 +153,22 @@ def _resolve_working_model(api_key: str) -> tuple[str, str]:
         for ver in API_VERSIONS:
             candidate_pairs.append((ver, custom_model.strip()))
 
+    preferred_defaults = _get_preferred_models()
+    for ver in API_VERSIONS:
+        for m in preferred_defaults:
+            if _is_compatible_model(m):
+                pair = (ver, m)
+                if pair not in candidate_pairs:
+                    candidate_pairs.append(pair)
+
     for ver in API_VERSIONS:
         discovered = _list_available_models(api_key, ver)
         if discovered:
             sorted_discovered = _sort_models_by_preference(discovered)
             for m in sorted_discovered:
-                candidate_pairs.append((ver, m))
-
-    preferred_defaults = _get_preferred_models()
-    for ver in API_VERSIONS:
-        for m in preferred_defaults:
-            pair = (ver, m)
-            if pair not in candidate_pairs:
-                candidate_pairs.append(pair)
+                pair = (ver, m)
+                if pair not in candidate_pairs:
+                    candidate_pairs.append(pair)
 
     last_http_err: urllib.error.HTTPError | None = None
     all_404 = True
@@ -158,10 +180,25 @@ def _resolve_working_model(api_key: str) -> tuple[str, str]:
                 return ver, mod
         except urllib.error.HTTPError as err:
             last_http_err = err
+            try:
+                err_body = json.loads(err.read().decode("utf-8"))
+                detail_msg = err_body.get("error", {}).get("message", err.reason).lower()
+            except Exception:
+                detail_msg = str(err.reason).lower()
+
+            if err.code in (401, 403):
+                raise err
+
+            if err.code == 400 and ("api key not valid" in detail_msg or "api_key_invalid" in detail_msg):
+                raise err
+
             if err.code != 404:
                 all_404 = False
-            if err.code in (400, 401, 403, 429):
+
+            if err.code == 429:
                 raise err
+
+            continue
         except Exception:
             continue
 
@@ -277,6 +314,14 @@ def _get_execution_candidate_pairs(api_key: str) -> list[tuple[str, str]]:
     defaults = _get_preferred_models()
     for ver in API_VERSIONS:
         for m in defaults:
+            if _is_compatible_model(m):
+                pair = (ver, m)
+                if pair not in pairs:
+                    pairs.append(pair)
+
+    for ver in API_VERSIONS:
+        discovered = _list_available_models(api_key, ver)
+        for m in _sort_models_by_preference(discovered):
             pair = (ver, m)
             if pair not in pairs:
                 pairs.append(pair)
@@ -376,13 +421,14 @@ def call_gemini_multimodal(
 
             if err.code == 404:
                 continue
-            if err.code == 400:
-                raise ValueError(f"Gemini API Bad Request: {detail_msg}")
             if err.code in (401, 403):
                 raise PermissionError(f"Gemini API authentication failed: {detail_msg}")
             if err.code == 429:
                 raise RuntimeError(f"Gemini API rate limit or quota exceeded: {detail_msg}")
-            raise RuntimeError(f"Gemini API error (HTTP {err.code}): {detail_msg}")
+            if err.code == 400 and ("api key not valid" in detail_msg.lower() or "api_key_invalid" in detail_msg.lower()):
+                raise ValueError(f"Gemini API Bad Request: {detail_msg}")
+
+            continue
 
         except json.JSONDecodeError as err:
             raise ValueError(f"Gemini returned non-JSON text: {err}")
@@ -477,13 +523,14 @@ def call_gemini_json(
 
             if err.code == 404:
                 continue
-            if err.code == 400:
-                raise ValueError(f"Gemini API Bad Request: {detail_msg}")
             if err.code in (401, 403):
                 raise PermissionError(f"Gemini API authentication failed: {detail_msg}")
             if err.code == 429:
                 raise RuntimeError(f"Gemini API rate limit or quota exceeded: {detail_msg}")
-            raise RuntimeError(f"Gemini API error (HTTP {err.code}): {detail_msg}")
+            if err.code == 400 and ("api key not valid" in detail_msg.lower() or "api_key_invalid" in detail_msg.lower()):
+                raise ValueError(f"Gemini API Bad Request: {detail_msg}")
+
+            continue
 
         except json.JSONDecodeError as err:
             raise ValueError(f"Gemini returned non-JSON text: {err}")
