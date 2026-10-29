@@ -169,3 +169,4 @@ const ta: Record<TranslationKey, string> = {
 };
 
 export default ta;
+

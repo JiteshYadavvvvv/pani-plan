@@ -221,3 +221,4 @@ def preview_advisory(subscription_id: str) -> NotificationDispatchPreview:
         provider="Local Dispatch Simulator",
         status_detail=f"Provider credentials not configured on backend ({'SMS_API_KEY' if channel == 'sms' else 'WHATSAPP_API_KEY'}). Formatted message verified.",
     )
+

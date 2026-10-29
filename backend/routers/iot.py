@@ -194,3 +194,4 @@ def list_devices() -> list[dict[str, Any]]:
             }
         )
     return results
+

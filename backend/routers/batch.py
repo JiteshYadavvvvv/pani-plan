@@ -130,3 +130,4 @@ def run_morning_batch_dispatch(req: BatchDispatchRunRequest) -> BatchDispatchRun
 @router.get("/api/batch/history")
 def get_batch_run_history() -> list[dict[str, Any]]:
     return _batch_run_history
+
