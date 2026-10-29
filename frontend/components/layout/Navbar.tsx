@@ -23,25 +23,42 @@ const navLinks: { href: string; labelKey: TranslationKey }[] = [
 
 function LanguageToggle() {
   const { locale, setLocale, t } = useLanguage();
-  const options: Locale[] = ["en", "hi"];
+  const options: { code: Locale; label: string }[] = [
+    { code: "en", label: "EN" },
+    { code: "hi", label: "हिं" },
+    { code: "mr", label: "मरा" },
+    { code: "ta", label: "தமி" },
+    { code: "te", label: "తెలు" },
+  ];
   return (
     <div
       className="flex items-center rounded border border-earth-light bg-surface p-0.5"
       role="group"
       aria-label={t("language.toggleLabel")}
     >
-      {options.map((option) => (
+      {options.map((opt) => (
         <button
-          key={option}
+          key={opt.code}
           type="button"
-          onClick={() => setLocale(option)}
-          aria-pressed={locale === option}
+          onClick={() => setLocale(opt.code)}
+          aria-pressed={locale === opt.code}
+          title={
+            opt.code === "en"
+              ? "English"
+              : opt.code === "hi"
+              ? "हिंदी"
+              : opt.code === "mr"
+              ? "मराठी"
+              : opt.code === "ta"
+              ? "தமிழ்"
+              : "తెలుగు"
+          }
           className={clsx(
-            "rounded px-2.5 py-1 text-xs font-semibold transition-colors",
-            locale === option ? "bg-forest text-ivory" : "text-muted hover:text-ink"
+            "rounded px-2 py-1 text-xs font-semibold transition-colors",
+            locale === opt.code ? "bg-forest text-ivory" : "text-muted hover:text-ink"
           )}
         >
-          {option === "en" ? t("language.english") : t("language.hindi")}
+          {opt.label}
         </button>
       ))}
     </div>

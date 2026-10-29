@@ -20,7 +20,7 @@ const copy = {
     eyebrow: "Crop & district data",
     title: "Explore crops and districts",
     subtitle:
-      "Browse the sample crop catalogue and district dataset side by side, filter by category or state, and cross-check which districts grow which crops.",
+      "Browse the scientific crop catalogue derived from FAO-56 and district groundwater dataset sourced from the Central Ground Water Board (CGWB) side by side, filter by category or state, and cross-check which districts grow which crops.",
     tabsAriaLabel: "Explore view",
     cropsTab: "Crops",
     districtsTab: "Districts",
@@ -34,7 +34,7 @@ const copy = {
     eyebrow: "फसल और जिला डेटा",
     title: "फसलों और जिलों का अन्वेषण करें",
     subtitle:
-      "नमूना फसल सूची और जिला डेटासेट को साथ-साथ देखें, श्रेणी या राज्य के अनुसार फ़िल्टर करें, और जानें कि कौन-सा जिला कौन-सी फसल उगाता है।",
+      "FAO-56 से व्युत्पन्न वैज्ञानिक फसल सूची और केंद्रीय भूजल बोर्ड (CGWB) से प्राप्त जिला भूजल डेटासेट को साथ-साथ देखें, श्रेणी या राज्य के अनुसार फ़िल्टर करें, और जानें कि कौन-सा जिला कौन-सी फसल उगाता है।",
     tabsAriaLabel: "अन्वेषण दृश्य",
     cropsTab: "फसलें",
     districtsTab: "जिले",

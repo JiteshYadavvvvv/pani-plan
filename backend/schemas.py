@@ -37,6 +37,8 @@ class CropOut(BaseModel):
     category: str
     root_depth_m: float
     typical_season_days: int
+    typical_water_need_mm: str = "450–650 mm"
+    fao_source: str = "FAO Irrigation and Drainage Paper No. 56"
 
 
 class DistrictOut(BaseModel):
@@ -48,6 +50,12 @@ class DistrictOut(BaseModel):
     dominant_soil: str
     baseline_water_stress_index: int
     primary_crops: list[str]
+    cgwb_stage_of_extraction_pct: float = 65.0
+    cgwb_category: str = "Safe"
+    annual_extractable_gw_mcm: float = 1200.0
+    gw_extraction_for_irrigation_mcm: float = 750.0
+    source_citation: str = "Central Ground Water Board (CGWB), Ministry of Jal Shakti, 2023-2024"
+    data_period: str = "2023-2024"
     is_sample_data: bool = False
 
 
@@ -60,6 +68,12 @@ class WaterStressMapPoint(BaseModel):
     stress_index: int
     stress_level: Literal["low", "moderate", "high", "severe"]
     primary_crops: list[str]
+    cgwb_stage_of_extraction_pct: float = 65.0
+    cgwb_category: str = "Safe"
+    annual_extractable_gw_mcm: float = 1200.0
+    gw_extraction_for_irrigation_mcm: float = 750.0
+    source_citation: str = "Central Ground Water Board (CGWB), Ministry of Jal Shakti, 2023-2024"
+    data_period: str = "2023-2024"
     is_sample_data: bool = False
 
 

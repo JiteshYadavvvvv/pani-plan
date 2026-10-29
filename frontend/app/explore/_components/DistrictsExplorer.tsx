@@ -246,26 +246,47 @@ export function DistrictsExplorer({
                   {c.detailState}: {selectedDistrict.state}
                 </p>
               </div>
-              <Badge tone={stressTone(stressLevelFromIndex(selectedDistrict.baseline_water_stress_index))}>
-                {c.stressLabels[stressLevelFromIndex(selectedDistrict.baseline_water_stress_index)]}
-              </Badge>
+              <div className="flex flex-col items-end gap-1">
+                <Badge tone={stressTone(stressLevelFromIndex(selectedDistrict.baseline_water_stress_index))}>
+                  {c.stressLabels[stressLevelFromIndex(selectedDistrict.baseline_water_stress_index)]}
+                </Badge>
+                <span className="rounded bg-earth-light/60 px-2 py-0.5 text-xs font-semibold text-ink">
+                  CGWB: {selectedDistrict.cgwb_category}
+                </span>
+              </div>
             </div>
 
-            <dl className="mt-5 grid gap-4 sm:grid-cols-2">
+            <dl className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <div>
                 <dt className="text-sm text-muted">{c.detailSoil}</dt>
-                <dd className="font-display text-2xl font-semibold text-forest">
+                <dd className="font-display text-xl font-semibold text-forest">
                   {c.soilLabels[selectedDistrict.dominant_soil]}
                 </dd>
               </div>
               <div>
                 <dt className="text-sm text-muted">{c.detailStress}</dt>
-                <dd className="font-display text-2xl font-semibold text-forest">
+                <dd className="font-display text-xl font-semibold text-forest">
                   {selectedDistrict.baseline_water_stress_index}
-                  <span className="ml-1 text-base font-normal text-muted">{c.outOf}</span>
+                  <span className="ml-1 text-sm font-normal text-muted">{c.outOf}</span>
+                </dd>
+              </div>
+              <div>
+                <dt className="text-sm text-muted">GW Extraction Stage</dt>
+                <dd className="font-display text-xl font-semibold text-forest">
+                  {selectedDistrict.cgwb_stage_of_extraction_pct.toFixed(1)}%
+                </dd>
+              </div>
+              <div>
+                <dt className="text-sm text-muted">Annual Extractable</dt>
+                <dd className="font-display text-xl font-semibold text-forest">
+                  {selectedDistrict.annual_extractable_gw_mcm.toFixed(0)} <span className="text-xs font-normal text-muted">MCM</span>
                 </dd>
               </div>
             </dl>
+
+            <div className="mt-3 rounded border border-earth-light/60 bg-sand/30 px-3 py-1.5 text-xs text-muted">
+              <span className="font-medium text-ink">Official Source:</span> {selectedDistrict.source_citation} ({selectedDistrict.data_period}). Irrigation draft: {selectedDistrict.gw_extraction_for_irrigation_mcm.toFixed(0)} MCM.
+            </div>
 
             <div className="mt-6">
               <p className="text-sm font-medium text-ink">{c.primaryCrops}</p>

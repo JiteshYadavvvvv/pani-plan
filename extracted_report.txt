@@ -1,0 +1,2097 @@
+ARMY INSTITUTE OF TECHNOLOGY, PUNE
+
+DEPARTMENT OF COMPUTER ENGINEERING
+
+FIELD PROJECT LAB
+
+PROJECT REPORT ON
+
+PAANIPLAN: LARGE-SCALE SOIL AND CROP DATA ANALYSIS FOR EFFICIENT AGRICULTURAL WATER MANAGEMENT
+
+Submitted by
+
+Roll No.
+
+Name
+
+3222
+
+Harsh Pandey
+
+3225
+
+Jatin
+
+3226
+
+Jitesh Yadav
+
+Group - 1
+
+Under the Guidance of
+
+Ms. Sushama Shirke
+
+in partial fulfillment for the award of the degree
+
+of
+
+BACHELOR OF TECHNOLOGY
+
+in
+
+SECOND YEAR OF COMPUTER ENGINEERING
+
+Academic Year 2026-2027
+
+CERTIFICATE
+
+This is to certify that the Field Project Lab report entitled
+
+"PaaniPlan: Large-Scale Soil and Crop Data Analysis for Efficient Agricultural Water Management"
+
+has been successfully completed and submitted by the following students of Second Year Computer Engineering, Army Institute of Technology, Pune, under the guidance of Ms. Sushama Shirke, during the academic year 2026-2027.
+
+Roll No.
+
+Student Name
+
+Signature
+
+3222
+
+Harsh Pandey
+
+3225
+
+Jatin
+
+3226
+
+Jitesh Yadav
+
+The work presented in this report is a consolidated outcome of the prescribed Field Project Lab activities, including study of Computer Engineering career roles, industry/field visit, problem identification, literature survey, existing-system study, and preliminary solution/prototype planning.
+
+Place
+
+Date
+
+Faculty Guide
+
+Head of Department
+
+Pune
+
+ACKNOWLEDGEMENT
+
+We sincerely thank Army Institute of Technology, Pune, and the Department of Computer Engineering for giving us the chance to do this Field Project Lab and to work on a real-life problem. We are especially thankful to our faculty guide, Ms. Sushama Shirke, for her guidance, helpful suggestions and constant encouragement throughout the project.
+
+We also thank the Centre for Development of Advanced Computing (C-DAC), Pune, and its staff for showing us their supercomputing facility (the PARAM and AIRAWAT systems) and explaining how it works. That visit gave us the idea for this project.
+
+Finally, we thank our group members, classmates and everyone who helped us during the visit, the reading of research papers, the building of our PaaniPlan website and the writing of this report. This project helped us learn real, practical Computer Engineering skills.
+
+3222: Harsh Pandey
+
+3225: Jatin
+
+3226: Jitesh Yadav
+
+TABLE OF CONTENTS
+
+Chapter
+
+Title
+
+Page
+
+1
+
+Introduction and Project Overview
+
+5
+
+2
+
+Computer Engineering Career Roles and Skills
+
+8
+
+3
+
+Industry / Field Visit and Organizational Study
+
+13
+
+4
+
+Problem Identification and Selection
+
+19
+
+5
+
+Literature Survey and Existing System Study
+
+27
+
+6
+
+Proposed Solution Direction and Prototype Plan
+
+33
+
+7
+
+Conclusion and Future Scope
+
+41
+
+8
+
+References and Appendices
+
+42
+
+CHAPTER 1
+
+INTRODUCTION AND PROJECT OVERVIEW
+
+1.1 Introduction
+
+Computer Engineering is about using computers, software, networks and data to solve real problems. The Field Project Lab lets us take what we learn in class and use it on a problem we see in the real world. In this project, we looked at a very common problem in India: farmers often do not know how much water their crops really need. We built a small website called PaaniPlan ("paani" means water) that gives a farmer a simple watering plan.
+
+1.2 Purpose of the Field Project
+
+The purpose of this project is to go step by step: first learn about Computer Engineering jobs, then visit a real organization (C-DAC, Pune), then find a real problem, read what others have already done, and finally plan and build a first version (prototype) of a solution.
+
+1.3 Project Workflow
+
+These are the steps we followed in this project:
+
+Studied different Computer Engineering jobs and the skills they need.
+
+Listed companies and organizations in Pune that work in computing.
+
+Visited C-DAC, Pune on 7 August 2026 and saw its supercomputers.
+
+Watched how the computers, data and people there work together.
+
+Thought of three real-life problems we could work on.
+
+Gave each problem marks out of 10 and picked the best one.
+
+Studied who is affected by the problem and how it is handled today.
+
+Read research papers and trusted sources about the problem.
+
+Compared apps and tools that already exist for this problem.
+
+Found what is still missing (the gap) and built the PaaniPlan prototype.
+
+1.4 Course Outcome Alignment
+
+CO
+
+How the Project Addresses the Outcome
+
+CO1
+
+We visited C-DAC, Pune, saw real supercomputers, and found a real problem: farmers wasting or lacking water.
+
+CO2
+
+We studied 15 Computer Engineering jobs such as software developer, data analyst, cloud and network engineer.
+
+CO3
+
+We studied the farm-water problem, read 10 papers and compared existing tools like CROPWAT and Meghdoot.
+
+CO4
+
+We planned the PaaniPlan solution and built a working website prototype at pani-plan.vercel.app.
+
+1.5 PROJECT OBJECTIVES
+
+To understand the main jobs in Computer Engineering and the skills each job needs.
+
+To find organizations in Pune that work in computing and related fields.
+
+To get real exposure by visiting C-DAC, Pune.
+
+To find a real-life problem from what we saw and read.
+
+To understand the problem properly before choosing any technology.
+
+To understand how farmers water their crops today and why it does not work well.
+
+To read research papers and study tools that already exist.
+
+To compare these tools and find their weak points.
+
+To find a clear gap that is backed by evidence.
+
+To build a simple first version (prototype) suitable for a Second Year student project.
+
+1.6 Scope of the Report
+
+This report covers the early stages of the project: finding the problem, reading research, studying existing tools and building a first prototype. The PaaniPlan website works, but it uses sample (demo) data, not live government data, and its advice has not yet been tested on a real farm. We clearly say which features are built and which are only planned.
+
+1.7 Project Details
+
+Parameter
+
+Details
+
+Project Title
+
+PaaniPlan: Large-Scale Soil and Crop Data Analysis for Efficient Agricultural Water Management
+
+Group No.
+
+1 (S2)
+
+Class
+
+Second Year Computer Engineering (SE Comp A)
+
+Academic Year
+
+2026-2027
+
+Faculty Guide
+
+Ms. Sushama Shirke
+
+Field/Visit Organization
+
+Centre for Development of Advanced Computing (C-DAC), Pune
+
+Problem Domain
+
+Agriculture + Computing (Data Analysis and Parallel Computing)
+
+Selected Problem
+
+Farmers do not know how much water their crops need and when to give it
+
+CHAPTER 2
+
+COMPUTER ENGINEERING CAREER ROLES AND SKILLS
+
+In this first stage, we studied the different jobs a Computer Engineer can do. This helped us see how the subjects we study in college connect to real jobs, and which tools and programming languages people use at work. We looked at jobs in software, data, cloud, networking, security and more.
+
+2.1 Career Roles Studied
+
+Sr. No.
+
+Career Role
+
+Primary Skill Area
+
+Tools / Technologies
+
+1
+
+Software Developer
+
+Programming and software development
+
+Java, Python, C++, Git, VS Code
+
+2
+
+Full Stack Developer
+
+Frontend + backend
+
+React, Next.js, Node.js, SQL, Git
+
+3
+
+Frontend Developer
+
+User interfaces
+
+HTML, CSS, JavaScript, TypeScript, Tailwind
+
+4
+
+Backend Developer
+
+Server-side development
+
+Python (FastAPI, Django), Java (Spring), REST APIs
+
+5
+
+DevOps Engineer
+
+CI/CD and deployment
+
+Docker, Kubernetes, GitHub Actions, Jenkins
+
+6
+
+Data Analyst
+
+Data analysis and visualization
+
+Excel, SQL, Python (Pandas), Power BI, Tableau
+
+7
+
+Data Engineer
+
+Data pipelines and storage
+
+Python, SQL, Apache Spark, Kafka, Airflow
+
+8
+
+Machine Learning Engineer
+
+ML model development
+
+Python, NumPy, scikit-learn, TensorFlow, PyTorch
+
+9
+
+Cybersecurity Analyst
+
+Security monitoring and analysis
+
+Wireshark, Nmap, SIEM tools, firewalls
+
+10
+
+Network Engineer
+
+Network design and administration
+
+Cisco routers/switches, TCP/IP, Packet Tracer
+
+11
+
+System Administrator
+
+System and server administration
+
+Linux, Windows Server, shell scripting
+
+12
+
+Cloud Engineer
+
+Cloud infrastructure
+
+AWS, Microsoft Azure, Google Cloud, Terraform
+
+13
+
+QA Engineer
+
+Software testing
+
+Selenium, JUnit, PyTest, Postman
+
+14
+
+Database Administrator
+
+Database management
+
+MySQL, PostgreSQL, Oracle, MongoDB
+
+15
+
+Mobile App Developer
+
+Mobile application development
+
+Kotlin, Swift, Flutter, React Native
+
+2.2 ROLE-WISE ANALYSIS
+
+Software Developer
+
+Aspect
+
+Group Findings
+
+Job Description
+
+Writes the instructions (code) that make computer programs and apps work.
+
+Responsibilities
+
+Understands what users need; writes and tests code; fixes bugs; keeps the software updated.
+
+Technical Skills
+
+Problem solving, data structures and algorithms, object-oriented programming, version control.
+
+Programming Languages
+
+Java, Python, C++, JavaScript
+
+Software / Tools
+
+VS Code, IntelliJ, Git and GitHub, debugging tools
+
+Career Opportunities
+
+Needed in almost every company; can grow to Senior Developer, Tech Lead or Architect.
+
+Full Stack Developer
+
+Aspect
+
+Group Findings
+
+Job Description
+
+Builds both parts of a website: the front (what you see) and the back (the server and database).
+
+Responsibilities
+
+Designs pages, builds the server logic, connects the database, and puts the site online.
+
+Technical Skills
+
+HTML/CSS, JavaScript frameworks, APIs, databases, deployment.
+
+Programming Languages
+
+JavaScript, TypeScript, Python, SQL
+
+Software / Tools
+
+React / Next.js, Node.js, FastAPI, Vercel, Git
+
+Career Opportunities
+
+Very popular in startups; can grow to Lead Engineer or start own product.
+
+Data Analyst
+
+Aspect
+
+Group Findings
+
+Job Description
+
+Looks at large amounts of data and finds useful patterns, then explains them with charts.
+
+Responsibilities
+
+Collects and cleans data, finds trends, makes charts and dashboards, writes simple reports.
+
+Technical Skills
+
+Statistics, data cleaning, data visualization, spreadsheets, SQL.
+
+Programming Languages
+
+Python, SQL, R
+
+Software / Tools
+
+Excel, Pandas, NumPy, Power BI, Tableau
+
+Career Opportunities
+
+Needed in farming, banking, health and government; can grow to Data Scientist.
+
+Cybersecurity Analyst
+
+Aspect
+
+Group Findings
+
+Job Description
+
+Protects computers, networks and data from hackers and attacks.
+
+Responsibilities
+
+Watches for attacks, checks for weak points, responds to incidents, teaches safe habits.
+
+Technical Skills
+
+Networking, operating systems, encryption, threat analysis, ethical hacking basics.
+
+Programming Languages
+
+Python, Bash, PowerShell
+
+Software / Tools
+
+Wireshark, Nmap, firewalls, SIEM tools
+
+Career Opportunities
+
+Fast-growing field; can grow to Security Engineer or Security Architect.
+
+Network Engineer
+
+Aspect
+
+Group Findings
+
+Job Description
+
+Designs and looks after the networks that connect computers, like at C-DAC where thousands of nodes are linked.
+
+Responsibilities
+
+Sets up routers and switches, keeps the network fast and safe, fixes connection problems.
+
+Technical Skills
+
+TCP/IP, routing and switching, subnetting, network security, high-speed links like InfiniBand.
+
+Programming Languages
+
+Python, Bash (for automation)
+
+Software / Tools
+
+Cisco devices, Packet Tracer, Wireshark, network monitoring tools
+
+Career Opportunities
+
+Needed in data centres, telecom and research labs; can grow to Network Architect.
+
+2.3 Overall Learning from Career-Role Study
+
+From this study, the roles most useful for our project were the Full Stack Developer, the Data Analyst and the Software Developer. To build PaaniPlan we needed full stack skills (a Next.js website and a FastAPI server), data skills (working with soil, crop and climate tables) and programming skills (writing the water formulas in Python with NumPy).
+
+Our visit to C-DAC also showed us how important Network Engineers and System Administrators are. A supercomputer is not just fast processors; it also needs very fast networks, storage, power backup and cooling. This helped us understand the "parallel processing" part of our project, where many calculations are done at the same time.
+
+CHAPTER 3
+
+INDUSTRY / FIELD VISIT AND ORGANIZATIONAL STUDY
+
+In this stage we made a list of organizations in Pune that work in computing fields such as software, AI, cloud, networking, cybersecurity and data analytics. Before the visit, our class also prepared a pre-visit study of 11 organizations (Microsoft, Google, IBM, SK Hynix, Oracle, Infosys, AT&T, JP Morgan, Capgemini, Cisco and C-DAC) and wrote questions we wanted to ask each of them.
+
+3.1 Organizations Considered
+
+Company
+
+Domain
+
+Location
+
+Visit Possible?
+
+Reason for Selection
+
+C-DAC, Pune
+
+High Performance Computing, AI, Cyber Security, Indian language computing
+
+Innovation Park, Pashan, Pune
+
+Yes
+
+Home of India's PARAM supercomputers; visit was arranged by our department
+
+Infosys
+
+IT services, digital platforms, AI
+
+Pune (Hinjewadi)
+
+No
+
+Large IT company; studied in our pre-visit report
+
+Capgemini
+
+Cloud computing, cybersecurity, data and AI
+
+Pune
+
+No
+
+Global IT consulting company; studied in our pre-visit report
+
+3.2 Selected Organization
+
+Parameter
+
+Details
+
+Organization Name
+
+Centre for Development of Advanced Computing (C-DAC), Pune
+
+Website
+
+www.cdac.in
+
+Office Address
+
+C-DAC Innovation Park, Panchawati, Pashan, Pune - 411 008
+
+Business Domain
+
+Supercomputing (HPC), AI computing, cyber security, VLSI, e-Governance, Indian language computing
+
+Year Established
+
+1988
+
+Approx. Employees
+
+Not verified by the group
+
+Departments Relevant to Computer Engineering
+
+National PARAM Supercomputing Facility (NPSF), AIRAWAT AI platform, HPC, software technologies, training (PG-DAC)
+
+Visit Date
+
+7 August 2026
+
+Visit Mode
+
+Physical visit
+
+3.3 ORGANIZATIONAL STUDY
+
+Aspect
+
+Observation / Information Collected
+
+Business Activities
+
+C-DAC is a research centre of the Government of India (Ministry of Electronics and IT). It builds supercomputers and gives computing power to scientists, colleges and companies.
+
+Computer Engineering Roles
+
+HPC engineers, system administrators, network engineers, AI/ML engineers, researchers and trainers.
+
+Technologies Used
+
+PARAM Yuva-II (about 500 TeraFLOPS), PARAM Siddhi-AI and AIRAWAT (NVIDIA DGX A100 GPU nodes, AMD EPYC CPUs), InfiniBand networking, PARAM Shavak, BOSS Linux.
+
+Departments
+
+National PARAM Supercomputing Facility (NPSF), AI supercomputing (AIRAWAT), R&D and training groups.
+
+Workflow Observed
+
+Users send big "jobs" (calculations) to the supercomputer; the job is split into many small parts that run on many CPUs and GPUs at the same time, and the results are joined at the end.
+
+Data / Inputs Used
+
+Large scientific data sets, for example weather, physics, chemistry and genetic data from research users.
+
+Users / Stakeholders
+
+Scientists, students, PhD scholars, government departments and private companies (paid and free/subsidised users).
+
+Tools / Platforms
+
+Rack servers, GPU nodes, high-speed networks, 3-layer storage, UPS and diesel power backup, special cooling.
+
+Challenges Observed
+
+Supercomputers need a lot of electricity and cooling; access needs registration and is charged for companies; most use is for big science, not daily-life problems.
+
+Learning from Visit
+
+Very large problems can be solved quickly by splitting them into many small parts. This idea (parallel computing) can also help farming.
+
+3.4 Contact / Visit Information
+
+Item
+
+Details
+
+HR / Coordinator Name
+
+Arranged through our college department
+
+Email
+
+Not collected by the group
+
+Phone
+
+Not collected by the group
+
+Training / Visit Department
+
+National PARAM Supercomputing Facility (NPSF), C-DAC Pune
+
+Permission Procedure
+
+College requested permission; C-DAC allowed a guided group visit
+
+Eligibility Requirements
+
+Students of AIT Pune, Second Year Computer Engineering, with faculty
+
+3.5 Purpose and Expected Learning
+
+Learn the history of supercomputing in India and why C-DAC was started in 1988.
+
+See real supercomputers like PARAM Yuva-II and AIRAWAT up close.
+
+Understand how CPUs and GPUs work together in parallel.
+
+See a real server room with racks, cables and fast networks.
+
+Learn why cooling and backup power are so important in a data centre.
+
+Learn how storage is arranged in layers so data is never lost.
+
+Understand how students, scientists and companies can use C-DAC computers (free and paid).
+
+Learn about small supercomputers like PARAM Shavak made for colleges.
+
+Connect our class topics (HPC, data analysis) with real-world use.
+
+Find ideas for a real-life problem that computing can help solve.
+
+3.6 FIELD / INDUSTRY VISIT OBSERVATIONS
+
+These are the things we saw or were told during our visit to C-DAC, Pune:
+
+Sr. No.
+
+Observation
+
+Evidence / Source
+
+Relevance to Problem
+
+1
+
+Supercomputers like PARAM and AIRAWAT use thousands of CPUs and GPUs working at the same time.
+
+Visit to supercomputing hall
+
+A big farm-water job (many villages, many crops) can be split and solved quickly in the same way.
+
+2
+
+PARAM Shavak is a small "supercomputer in a box" made for colleges.
+
+C-DAC explanation; visit report
+
+Powerful computing can reach smaller places, not only big labs.
+
+3
+
+Supercomputers are mostly used for big science, like weather and physics research.
+
+Explanation by C-DAC staff
+
+Computing power is not yet commonly used for everyday farming decisions.
+
+4
+
+Data is stored in 3 layers (active, bulk, archive) with no single point of failure.
+
+Server room visit
+
+Farm data from many districts must be stored safely and in an organized way.
+
+5
+
+Cooling and backup power are as important as the computers themselves.
+
+Server room visit
+
+A real service must be reliable and always available.
+
+6
+
+Access to supercomputers needs registration; companies must pay; trials are limited.
+
+Explanation on user access
+
+Our prototype must be light enough to run on normal servers, not only on supercomputers.
+
+3.7 Visit Photographs / Evidence
+
+Figure 3.1: C-DAC Centre, Pune (photo used in our field visit report). Group visit photos can be added here.
+
+3.8 Key Takeaways
+
+The visit taught us that the biggest problems are solved by breaking them into many small pieces and working on all pieces at the same time. We learned that a computer centre is not only about fast chips; it also needs fast networks, safe storage, power backup and cooling. We also learned that India built its own supercomputers when other countries refused to sell them, which taught us about self-reliance.
+
+Most importantly, we noticed that this huge computing power is mostly used for science, and very little for daily problems like farming. This gave us our project idea: use data and parallel computing to help farmers decide how much water to give their crops.
+
+CHAPTER 4
+
+PROBLEM IDENTIFICATION AND SELECTION
+
+A good project starts with a real need, not with a technology. So, first we looked for real problems, found who is affected and how they handle it today, and only then thought about a solution.
+
+4.1 Candidate Problems
+
+Sr.
+
+Problem Title
+
+Domain
+
+Source / Location
+
+Affected Users
+
+Existing Method
+
+Major Difficulty
+
+1
+
+Farmers do not know how much water their crops need
+
+Agriculture + Data
+
+Our reading after the C-DAC visit; FAO and ICAR sources
+
+Farmers, farm planners
+
+Watering by habit, guess or neighbour's advice; mostly flood irrigation
+
+Too much water is wasted or too little water harms the crop
+
+2
+
+Small colleges find it hard to use supercomputers
+
+Education + HPC
+
+C-DAC visit (user access rules)
+
+Students, teachers, researchers
+
+Register with C-DAC, apply for time; some colleges buy PARAM Shavak
+
+Process takes time; limited free hours; not every college can afford it
+
+3
+
+Server rooms use a lot of electricity for cooling
+
+Data centre / Green computing
+
+C-DAC server room visit
+
+Data centres, their staff, environment
+
+Air or liquid cooling, UPS and diesel backup
+
+High power bills and energy use; hard for students to test
+
+4.2 Preliminary Analysis of Candidate Problems
+
+Candidate Problem 1
+
+Aspect
+
+Analysis
+
+Problem Description
+
+India has many types of soil, weather and crops. Each crop needs a different amount of water at each stage of its life. Most farmers cannot measure this, so they guess.
+
+Affected Users / Stakeholders
+
+Farmers, farm workers, village water committees, agriculture officers, government planners.
+
+Existing Practice / Process
+
+Farmers water their fields on a fixed routine, often by flooding the whole field, based on habit or what a neighbour does.
+
+Observed Difficulty and Impact
+
+Too much water wastes groundwater and electricity for pumps; too little water stresses the plant and lowers the harvest.
+
+Basis / Evidence
+
+C-DAC visit idea + reading of FAO, ICAR and Ministry of Agriculture sources (Assignment 4 and 5).
+
+Candidate Problem 2
+
+Aspect
+
+Analysis
+
+Problem Description
+
+Supercomputers are powerful, but students in small colleges find it hard to use them for projects and learning.
+
+Affected Users / Stakeholders
+
+Students, teachers, researchers in small colleges.
+
+Existing Practice / Process
+
+Colleges register with C-DAC for free/subsidised time, or buy a PARAM Shavak system.
+
+Observed Difficulty and Impact
+
+Learning is slower; many students never get hands-on HPC practice.
+
+Basis / Evidence
+
+Explained during the C-DAC visit (user access and PARAM Shavak).
+
+Candidate Problem 3
+
+Aspect
+
+Analysis
+
+Problem Description
+
+Server rooms and supercomputers need huge amounts of electricity, a large part of it just for cooling.
+
+Affected Users / Stakeholders
+
+Data centre owners and staff, the environment.
+
+Existing Practice / Process
+
+Hot aisle / cold aisle design, liquid cooling, UPS and diesel generators.
+
+Observed Difficulty and Impact
+
+High running cost and high energy use.
+
+Basis / Evidence
+
+Seen in the C-DAC server room.
+
+4.3 PROBLEM SELECTION MATRIX
+
+Evaluation Criterion
+
+Problem 1
+
+Problem 2
+
+Problem 3
+
+Real-life relevance
+
+9 /10
+
+7 /10
+
+7 /10
+
+Clarity of affected users
+
+9 /10
+
+7 /10
+
+6 /10
+
+Availability of information/data
+
+8 /10
+
+6 /10
+
+5 /10
+
+Technical feasibility
+
+9 /10
+
+6 /10
+
+4 /10
+
+Suitability for Second Year scope
+
+8 /10
+
+5 /10
+
+4 /10
+
+Potential for improvement
+
+9 /10
+
+6 /10
+
+6 /10
+
+Potential impact
+
+9 /10
+
+6 /10
+
+7 /10
+
+Availability of literature
+
+8 /10
+
+6 /10
+
+7 /10
+
+Scope for Computer Engineering solution
+
+9 /10
+
+8 /10
+
+6 /10
+
+Group interest
+
+9 /10
+
+7 /10
+
+6 /10
+
+Total Score
+
+87 / 100
+
+64 / 100
+
+58 / 100
+
+4.4 Selection Justification
+
+Problem 1 (farm water) got the highest score: 87 out of 100. It affects millions of people in India, it is easy to understand, and trusted information (FAO formulas, ICAR soil data, government farm data) is freely available. It is also possible for Second Year students to build a working website for it in one semester.
+
+Problems 2 and 3 are real, but they are harder for us to test. Problem 2 depends on C-DAC's own rules, and Problem 3 needs real data-centre hardware and power data, which we cannot get. So we selected Problem 1.
+
+4.5 Final Selected Problem
+
+Parameter
+
+Details
+
+Problem Title
+
+Farmers do not know how much water their crops need and when to give it
+
+Source
+
+Industrial Visit (C-DAC, Pune) + Agriculture
+
+Problem Domain
+
+Agriculture and Water Management, using Data Analysis and Parallel Computing
+
+Target Users
+
+Farmers, farm planners and agriculture officers in India
+
+Location / Context
+
+Indian farms across different districts, soils and climates
+
+4.6 Problem Background
+
+Farming uses most of India's fresh water. In many places, water comes from the ground through borewells and pumps. When a farmer gives more water than needed, the extra water is wasted, the pump uses more electricity, and the groundwater level goes down. When a farmer gives less water than needed, the plant gets "stressed" (thirsty) and the harvest becomes smaller.
+
+The right amount of water depends on many things: the type of soil, the crop, how old the plant is, how hot it is and how much it rained. Scientists already have a trusted method to calculate this (called FAO-56), but it is written for experts. A farmer in a village usually never gets to use it. So the decision is made by habit or guesswork. That is why a simple, clear tool is needed.
+
+4.7 TARGET USERS AND STAKEHOLDERS
+
+Sr. No.
+
+Target User / Stakeholder
+
+Role / Relationship
+
+Requirement / Difficulty
+
+1
+
+Farmer
+
+Main user; grows the crop
+
+Needs a simple answer: "how much water and how often" in his own language
+
+2
+
+Farm worker
+
+Gives water to the field
+
+Needs clear instructions that are easy to follow
+
+3
+
+Agriculture officer / extension worker
+
+Advises farmers
+
+Needs a quick way to give crop- and district-wise advice to many farmers
+
+4
+
+Government planner
+
+Plans water use for a district or state
+
+Needs to see which districts have high water stress
+
+5
+
+Researchers and students
+
+Study farming and computing
+
+Need a tool to test formulas and see how parallel computing speeds up big batches
+
+4.8 DETAILED PROBLEM STATEMENT
+
+In India, most farmers decide how much water to give their crops by habit, by guessing, or by copying their neighbours. Very few farmers measure their soil or check the weather before watering. This is a problem because India is a very large and varied country. The black soil of Maharashtra holds water differently from the sandy soil of Rajasthan or the alluvial soil of Punjab. Rice, wheat, cotton and sugarcane all need different amounts of water, and even the same crop needs more water when it is flowering than when it is a small seedling. Hot and dry days pull more water out of the soil and leaves than cool and cloudy days.
+
+The people most affected are farmers, especially small farmers, along with the farm workers, agriculture officers and government planners who support them. The problem happens in villages across every state, wherever crops are watered from wells, borewells or canals.
+
+Today, the most common method is flood irrigation on a fixed routine: the farmer fills the field with water every few days, whether the crop needs it or not. Scientists already have a trusted formula for crop water needs (the FAO-56 method), and the government and ICAR have published lots of soil and crop data. But this information is spread across different places and written for experts, not farmers. There is no simple tool that tells a farmer in one line: "Give about 18 mm of water every 6 days."
+
+Because of this, a lot of water and electricity is wasted, groundwater levels keep falling, and crops sometimes suffer from too little water, which lowers the harvest and the farmer's income. Doing the scientific calculation for every field and every district also means a very large number of small calculations, which takes time on a normal computer. Therefore, there is a clear need for a simple, crop-wise and location-wise watering advice tool that uses trusted science, explains the answer in plain words, and can handle many calculations quickly using parallel computing, the same idea we saw at C-DAC.
+
+4.9 EXISTING PROCESS / CURRENT SYSTEM
+
+Figure 4.1: How farmers decide on watering today (the red box shows where the main problem happens)
+
+4.10 Explanation of Existing Process
+
+Step 1 - Input: The farmer has a field, a crop and a water source such as a well, canal or borewell.
+
+Step 2 - Existing process: The farmer decides when and how much to water by habit, guess, or by asking a neighbour. No soil, weather or crop-stage information is used.
+
+Step 3 - Activity (main problem): The field is watered on a fixed routine, often by flooding it. This is where the main problem happens, because the amount is not measured.
+
+Step 4 - Decision: Was it the right amount at the right time? Usually nobody knows for sure.
+
+Step 5 - Output: In the bad case, water and electricity are wasted, or the crop gets too little water and grows less. In the lucky case, the crop grows well, but the farmer cannot repeat it on purpose.
+
+4.11 IMPACT OF THE PROBLEM
+
+Impact Area
+
+Observed / Identified Impact
+
+User Impact
+
+Farmers lose money because of lower harvests or higher pumping costs.
+
+Operational Impact
+
+No planning: watering is done on a fixed routine instead of the crop's real need.
+
+Technical Impact
+
+Trusted formulas and data exist but are not turned into an easy tool.
+
+Time / Efficiency Impact
+
+Farmers spend extra hours watering when it is not needed.
+
+Cost / Resource Impact
+
+Extra electricity and diesel for pumps; wasted groundwater.
+
+Social / Institutional Impact
+
+Falling groundwater in many districts affects whole villages and future generations.
+
+Data / Security Impact
+
+Farm data is scattered across different organisations; there is no single place to see it.
+
+4.12 NEED FOR IMPROVEMENT
+
+The current way of watering is not good enough because it is based on guesswork. What is needed is a simple helper that brings together soil, crop and weather information, uses a trusted scientific method to work out the right amount of water, and gives the answer in one easy line in the farmer's language. It should also be able to handle many fields or districts at once, quickly.
+
+4.13 Initial Problem Statement
+
+Farmers in India do not know how much water their crops need and when to give it, because soil, crop and weather differ from place to place and the scientific method is too hard for daily use. This leads to wasted water or lower harvests.
+
+CHAPTER 5
+
+LITERATURE SURVEY AND EXISTING SYSTEM STUDY
+
+5.1 Objective of Literature Survey
+
+A literature survey means reading what other researchers and engineers have already studied or built about our problem. It tells us which methods work, what data is needed, what results others got, and what is still missing. For this project we surveyed 31 research papers and authoritative sources, focusing heavily on recent publications from 2023, 2024, 2025, and 2026, alongside foundational guidelines from the United Nations FAO, national reports from C-DAC and the Central Ground Water Board, and our working web prototype (https://pani-plan.vercel.app/).
+
+5.2 Literature Selection
+
+We selected sources directly connected to our problem: how to calculate crop water needs with limited weather data, how to design simple digital advisory systems for farmers, why India's groundwater crisis requires urgent action, and how parallel computing speeds up batch calculations across thousands of fields. We prioritized recent peer-reviewed journals from 2023 onwards, including Agricultural Water Management, Computers and Electronics in Agriculture, Water, Agronomy, IoT, and Array (Elsevier), as well as the updated FAO-56 Rev. 1 guidelines (2024) and recent Central Ground Water Board surveys (2023-2024).
+
+5.3 LITERATURE REVIEW MATRIX - PART I
+
+No.
+
+Paper / Authors
+
+Year / Source
+
+Problem Addressed
+
+Method / Technology
+
+1
+
+J. A. Andrade & R. Ventura(Finisterra)
+
+2024
+
+How to calculate crop water loss when weather data is limited
+
+Compared the simple Hargreaves-Samani formula against full Penman-Monteith across 20 climate sites
+
+2
+
+A. Ezzahri et al.(AgriEngineering)
+
+2024
+
+Delivering practical irrigation advice to farmers through a website
+
+Built Soqia-Advice: a Web-GIS platform using weather forecasts and tree water balance
+
+3
+
+Adnan(Array, Elsevier)
+
+2023
+
+Why parallel programs on multicore chips do not always speed up as expected
+
+Work-stealing parallel benchmark evaluation and updated Amdahl's Law analysis
+
+4
+
+H.-J. Kim et al.(Agric. Water Manage.)
+
+2023
+
+Calibrating temperature-based water formulas across diverse climates
+
+Multi-scale parameter estimation to adapt the Hargreaves-Samani equation
+
+5
+
+S. Amani & Shafizadeh(Agric. Water Manage.)
+
+2023
+
+Evaluating machine learning models for estimating farm water evaporation
+
+Systematic review of satellite remote sensing and ground station predictive models
+
+6
+
+D. Vallejo-Gómez et al.(Agronomy)
+
+2023
+
+Understanding why farmers adopt or abandon smart irrigation systems
+
+Systematic review of 120 irrigation systems; identified complex UI as main barrier
+
+7
+
+G. P. Pereira et al.(IoT, MDPI)
+
+2023
+
+Automating precision drip irrigation on a budget
+
+Built low-cost ESP32 microcontroller system connected to soil probes and web dashboard
+
+8
+
+E. S. Hassan et al.(Water)
+
+2024
+
+Sensor errors causing uneven watering in corners of agricultural fields
+
+New wireless sensor network localization algorithm to improve water saving
+
+9
+
+R. K. Kasera & T. Acharjee(Internet of Things)
+
+2024
+
+Automated smart irrigation scheduling for vegetable farming
+
+IoT edge computing framework for automated tomato crop water management
+
+10
+
+A. Kaur et al.(Journal of Sensors)
+
+2024
+
+Predicting exact watering schedules under changing weather conditions
+
+Hybrid machine learning models paired with in-situ soil moisture sensors
+
+11
+
+Y. Dong et al.(Frontiers in Water)
+
+2024
+
+Real-world farmer feedback on automated irrigation tools in fields
+
+In-field sensor deployment and usability interviews with commercial growers
+
+12
+
+S. Banerjee et al.(Cambridge Prisms)
+
+2025
+
+Mapping severe groundwater depletion and over-pumping across India
+
+Geospatial machine learning models evaluating irrigation extraction vs natural recharge
+
+13
+
+S. Rana et al.(J. Mountain Research)
+
+2024
+
+Assessing dynamic groundwater depletion in agrarian states of India
+
+Synthesis of national aquifer monitoring data and tube-well pumping sustainability
+
+14
+
+Central Ground Water Board(Ministry of Jal Shakti)
+
+2023
+
+Measuring national groundwater extraction rates for farming irrigation
+
+National Compilation: revealed that 87% of all pumped groundwater in India is used for agriculture
+
+15
+
+Central Ground Water Board(Ministry of Jal Shakti)
+
+2024
+
+Tracking critical and overexploited irrigation assessment blocks across India
+
+Annual nationwide aquifer report highlighting acute water stress in northwest agrarian states
+
+16
+
+H. Al-Naji et al.(Comput. Electron. Agric.)
+
+2024
+
+Forecasting regional canal water demand a week in advance
+
+Attention-based deep time-series neural network for irrigation district management
+
+17
+
+J. Bellvert et al.(Comput. Electron. Agric.)
+
+2024
+
+Spotting thirsty crops before visible leaf wilting occurs
+
+Spatial machine learning models integrating multispectral imagery and thermal data
+
+18
+
+F. Viani et al.(Comput. Electron. Agric.)
+
+2023
+
+Smart irrigation decision-making under uncertain weather forecasts
+
+Cloud-connected fuzzy inference system that adjusts daily watering schedules
+
+19
+
+M. Garcés-Sánchez et al.(Comput. Electron. Agric.)
+
+2024
+
+Overcoming farmer distrust of black-box automated watering systems
+
+Adaptive decision support system integrating the farmer in the control loop
+
+20
+
+A. Karbowski(IEEE / Open Access)
+
+2025
+
+Finding the absolute theoretical speedup limit of multicore computer chips
+
+Revisiting Amdahl's and Gustafson's Laws under modern multicore CPU architectures
+
+5.4 LITERATURE REVIEW MATRIX - PART II 
+
+No.
+
+Dataset / Input
+
+Key Findings
+
+Limitations
+
+Relevance
+
+1
+
+Daily weather data from 20 stations in Portugal
+
+Hargreaves-Samani formula matches complex FAO-56 Penman-Monteith closely when calibrated with temperature range.
+
+Slightly underestimates water loss in very windy conditions.
+
+Justifies our choice of a simple temperature-based formula in the backend.
+
+2
+
+Weather forecasts and orchard field data in Morocco
+
+A clear web platform successfully helped farmers reduce tree water consumption by 22%.
+
+Built specifically for fruit trees in Morocco; not tested for Indian field crops.
+
+Proves that a website is a very practical, friendly way to deliver irrigation advice.
+
+3
+
+Synthetic multicore benchmark workloads
+
+Parallel speedup departs from simple formulas on uneven CPU cores due to coordination overhead.
+
+Tested on lab servers rather than live farming data.
+
+Directly explains the speedup and overhead curves plotted in our Parallel Lab.
+
+4
+
+Global climate reanalysis grid datasets
+
+Locally tuning temperature radiation factors improves water estimation accuracy by 18%.
+
+Requires multi-year climate history for each district.
+
+Supports our plan to add localized district climate calibration in future versions.
+
+5
+
+Satellite thermal and ground flux tower data
+
+Machine learning accurately predicts crop water loss when hundreds of sensor readings exist.
+
+Requires costly ground sensors and heavy cloud GPUs.
+
+Shows that for a student project, transparent physics formulas (FAO) are more practical.
+
+6
+
+Global survey of 120 smart irrigation platforms
+
+User interface complexity is the #1 reason farmers abandon commercial agritech systems.
+
+Qualitative literature review.
+
+Proves our design rule: PaaniPlan must output one plain-language line of advice.
+
+7
+
+Microcontroller sensors in tomato greenhouse
+
+Drip irrigation managed by automated microchips cut water use by 35% compared to flood.
+
+Hardware cost ($150+) is too high for smallholder Indian farmers.
+
+Confirms the value of drip efficiency calculations in PaaniPlan's math engine.
+
+8
+
+Simulated wireless sensor topologies
+
+Sensor position drift can cause uneven watering in corners of agricultural fields.
+
+Computer simulation without field dirt trials.
+
+Shows that software decision advice is safer than fully automated blind valves.
+
+9
+
+Tomato field microclimate and soil moisture logs
+
+Edge compute devices reduce data delays in remote villages with weak mobile internet.
+
+Solar battery life is vulnerable in intense outdoor heat.
+
+Highlights why a web application accessed via smartphone is easier to maintain.
+
+10
+
+Field soil moisture and weather station data
+
+Pairing sensor data with predictive algorithms yields 92% irrigation scheduling accuracy.
+
+Trained only on localized single-plot conditions.
+
+Confirms that soil water holding capacity is critical for calculating watering intervals.
+
+11
+
+Interviews with commercial vegetable growers
+
+Growers prefer receiving advice as actionable water depth (mm or liters) rather than raw charts.
+
+Small sample size (15 farms).
+
+Directly shaped PaaniPlan's output: 'Apply ~18 mm every 6 days via Drip'.
+
+12
+
+Central Ground Water Board well monitoring logs
+
+Over 60% of blocks in northwest India face severe groundwater overdraft from paddy flooding.
+
+Macro-level district data lacking field-level granularity.
+
+Provides the foundational justification for building PaaniPlan's Water Stress Map.
+
+13
+
+Government groundwater surveys (2018-2023)
+
+Over-extraction is heavily concentrated in dry winter rabi seasons when rainfall is near zero.
+
+Policy-oriented overview.
+
+Shows why calculating effective rainfall and crop growth stages is essential.
+
+14
+
+Dynamic Groundwater Assessment Report (CGWB)
+
+Farming accounts for 87% of all extracted groundwater in India; national extraction stage is 60%.
+
+Annual macro compilation.
+
+Proves that solving agricultural water wastage is a matter of national survival.
+
+15
+
+Aquifer status compilation (CGWB)
+
+Over 1,000 blocks classified as 'Critical' or 'Overexploited' across Punjab, Haryana, Rajasthan.
+
+Government document without software solutions.
+
+Underpins the district risk indicators used in PaaniPlan's Explore module.
+
+16
+
+Canal irrigation district multi-year logs
+
+Attention models forecast canal head water requirements 7 days in advance with high accuracy.
+
+Demands heavy deep learning training pipelines.
+
+Shows that district-level water demand aggregation is valuable for canal authorities.
+
+17
+
+Drone multispectral and thermal imagery
+
+High-resolution crop water stress indexes pinpoint thirsty trees before visible wilting occurs.
+
+Drone flights are far too costly for small farmers.
+
+Reinforces the need for a free, accessible web alternative like PaaniPlan.
+
+18
+
+Low-cost sensor nodes in citrus orchards
+
+Fuzzy logic allows irrigation controllers to handle uncertain weather forecasts gracefully.
+
+Requires custom microcontroller programming.
+
+Supports the practical logic used in our FAO-56 irrigation threshold rules.
+
+19
+
+Agronomic trial with 40 participating growers
+
+Growers require an override button and clear explanations; pure autonomous systems fail trust.
+
+Limited to Mediterranean olive groves.
+
+Inspired the transparent 'How It Works' documentation page on our website.
+
+20
+
+Theoretical multicore benchmark suite
+
+Parallel speedup reaches a strict ceiling determined by sequential code and memory bandwidth.
+
+Pure theoretical analysis.
+
+Directly explains the asymptotic curve plotted in PaaniPlan's Parallel Benchmarks page.
+
+Table 5.3 and Table 5.4 together cover 20 primary research papers from 2023 to 2026 that guided our project design. Our complete survey includes 31 authoritative references listed in Chapter 8, incorporating verified datasets from C-DAC, the Food and Agriculture Organization (FAO), the Central Ground Water Board (CGWB), and our live prototype at https://pani-plan.vercel.app/.
+
+5.6 DETAILED LITERATURE DISCUSSION
+
+Theme 1: How to calculate crop water needs
+
+The FAO-56 standard [28] is the worldwide 'rule book' for working out how much water a plant drinks. Think of it like this: first, we find out how 'thirsty' the sunny, dry air is on any day-this is called reference evapotranspiration (ETo). It is like measuring how quickly wet laundry dries on a sunny clothesline. Then, we multiply that number by a crop factor (Kc), because a big, leafy sugarcane plant drinks much more water than a tiny baby sprout! The full FAO-56 formula needs eight different weather readings, like wind speed and sunshine hours, which most Indian villages do not have. Andrade and Ventura [1], Kim et al. [4], and Zúñiga-Alarcón et al. [21] proved between 2023 and 2024 that a simpler formula (called Hargreaves-Samani), which only needs daily high and low temperatures and the farm's location, gives great results that are more than 90% accurate when compared to the full method. This confirms that using the Hargreaves-Samani formula in our PaaniPlan backend is scientifically sound and perfect for Indian farmers.
+
+Theme 2: Advice systems for farmers and why water matters
+
+Having a good formula is not enough-the advice must reach the farmer in words they can actually understand. In 2023, Vallejo-Gómez et al. [6] surveyed 120 smart irrigation tools and discovered that the number one reason farmers stop using agritech apps is that the screens are too complicated and full of confusing science words! Dong et al. [11] and Garcés-Sánchez et al. [19] found in 2024 that farmers do not want confusing graphs of soil pressure; they just want to know: 'How much water should I give, and on what day?' In Morocco, Ezzahri et al. [2] built a website called Soqia-Advice that helped farmers save 22% of their water. In Portugal, Silva et al. [22] showed that farmers using web advice saved water year after year. Meanwhile, reports from the Central Ground Water Board [14, 15] and research by Banerjee et al. [12] and Rana et al. [13] show that 87% of all pumped water in India is used for farming, and over 60% of blocks in northwestern states are over-pumping their wells. These recent studies prove that building an easy, bilingual website like PaaniPlan [31] can make a real difference in saving India's precious groundwater.
+
+Theme 3: Making many calculations fast (parallel computing)
+
+India has over 140 million farms. If we want to calculate custom watering schedules for thousands of villages every morning, doing them one by one in a standard computer loop takes too long! At C-DAC Pune [30], we saw how supercomputers solve giant problems by splitting the work across many processors. In computer science, this is called parallel computing. Imagine 10,000 exam sheets: if one teacher grades them alone, it takes days; if four teachers share the pile, they finish much faster! However, as Adnan [3], Karbowski [24], and Benilov and Benilova [26] showed in recent 2023-2025 papers, there is a famous rule called Amdahl's Law: because some parts of the work cannot be split, and because handing out the tasks takes extra time (overhead), you cannot speed up a program forever just by adding more processors! In fact, for tiny jobs of only 100 fields, splitting the work across many processors actually makes it slower because of setup lag. Harris et al. [29] and Rauber and Rünger [25] show that using NumPy array vectorization lets the computer calculate 15,000 fields in a single mathematical heartbeat. This is why PaaniPlan includes a live Parallel Benchmarking Lab, letting anyone see the real difference between serial loops, multi-core pools, and vector math.
+
+5.7 Overall Findings from Literature
+
+Across all 31 studies from 2023 to 2026, four clear conclusions stand out: (1) The science of crop water needs is well proven, and using temperature-based formulas (Hargreaves-Samani) is accurate enough when village weather data is limited. (2) Websites are an effective way to reach farmers, but the screen must be clean, simple, and available in local languages like Hindi. (3) India's groundwater crisis is severe, with 87% of extraction driven by farming, making digital water scheduling a national priority. (4) Parallel computing can process thousands of farms in milliseconds, but programmers must be mindful of Amdahl's Law and thread overhead. The biggest gap in existing work is that almost all previous tools were either made for experts, made for other countries, or too expensive for smallholder farmers.
+
+5.8 Existing Systems Identified
+
+Existing System / Product
+
+Purpose
+
+Main Features
+
+Technology / Approach
+
+Advantages
+
+Limitations
+
+Relevance
+
+FAO CROPWAT
+
+Calculate crop water needs and watering schedules
+
+Water need per crop, irrigation schedule, uses FAO-56
+
+Desktop software (FAO)
+
+Trusted, free, scientific
+
+Made for experts; needs many inputs; not simple for farmers; no Indian language
+
+Uses the same science as PaaniPlan
+
+Meghdoot app
+
+Weather-based farming advice in India
+
+District weather forecast and crop advice
+
+Mobile app by IMD, IITM and ICAR
+
+Made for India; local languages
+
+Gives general advice, not an exact water amount for a field
+
+Shows farmers can use apps for advice
+
+Soqia-Advice [5]
+
+Watering advice for fruit-tree farms
+
+Web map, weather forecast, farmer module
+
+Web-GIS platform
+
+Tested on a real farm; uses forecasts
+
+Made for Morocco and trees only; not for Indian crops
+
+Shows a website can deliver irrigation advice
+
+ 5.9 Limitations Identified from Existing Work
+
+No.
+
+Existing Approach / System
+
+Identified Limitation
+
+Evidence / Reference
+
+1
+
+FAO-56 full Penman-Monteith method
+
+Needs many weather readings that most villages do not have
+
+[1], [2]
+
+2
+
+CROPWAT and AquaCrop
+
+Built for experts; hard for farmers to use
+
+[1], [6]
+
+3
+
+Web advisory platforms
+
+Made for other countries and crops; not tested in India
+
+[5]
+
+4
+
+Simple temperature-based formula
+
+Needs local adjustment to be more accurate
+
+[3], [4]
+
+5
+
+Parallel computing
+
+Speed-up is limited; small jobs can even get slower
+
+[8], [10]
+
+5.11 IDENTIFIED GAP
+
+After reading the papers and checking existing tools, we found these gaps:
+
+No simple answer: Existing tools give charts and numbers for experts, but not one clear line like "give 18 mm every 6 days".
+
+Data is scattered: Soil data (ICAR), crop data (FAO) and weather data (IMD/government) are kept in different places.
+
+Not made for India: Good advice websites exist, but for other countries and crops.
+
+Language: Most tools are only in English; farmers need Hindi and other Indian languages.
+
+Scale: Powerful computing (like at C-DAC) is used for science, but not for everyday farm advice for many districts at once.
+
+5.12 REFINED FINAL PROBLEM STATEMENT
+
+Farmers in India decide how much water to give their crops mostly by habit, which wastes water and electricity or harms the crop. A trusted scientific method (FAO-56 with the Hargreaves-Samani formula) already exists, and soil, crop and climate data are available, but they are scattered and written for experts. Existing tools such as CROPWAT are too complex, apps like Meghdoot give only general advice, and web advisory platforms are built for other countries. There is a need for a simple, India-focused web tool that takes the district, crop, growth stage, irrigation method and field size, and gives one plain-language answer in English or Hindi on how much water to give and how often. Because advice for many farms means many separate calculations, the tool should also show how parallel computing (multi-core and vectorised) can do them faster, and honestly show the limits of that speed-up.
+
+CHAPTER 6
+
+PROPOSED SOLUTION DIRECTION AND PROTOTYPE PLAN
+
+In this chapter we explain our solution, PaaniPlan, and the working prototype we built. The prototype is live at https://pani-plan.vercel.app/. It is a student project for learning and demonstration, and it uses sample data, not live government data.
+
+6.1 Proposed Solution / Module
+
+Item
+
+Details
+
+Proposed System Name
+
+PaaniPlan ("paani" = water)
+
+Solution Type
+
+Web application (frontend + backend) with data analysis and parallel computing
+
+Primary Users
+
+Farmers, agriculture officers, students and researchers
+
+Main Objective
+
+Tell a farmer how much water to give a crop and how often, in simple words
+
+Core Problem Addressed
+
+Farmers water by guess because the scientific method is too hard to use
+
+Expected Benefit
+
+Less water wasted, healthier crops, and a clear demo of how parallel computing can handle many farms at once
+
+6.2 Proposed Modules
+
+Module
+
+Purpose
+
+Main Functions
+
+User
+
+Advisory (Calculator)
+
+Give a watering plan
+
+Takes district, crop, growth stage, method and field size; gives amount and gap between waterings
+
+Farmer
+
+Explore
+
+See crops and districts
+
+Sample crop list and district data; filter by category or state
+
+Farmer, officer, student
+
+Water Map
+
+See water stress
+
+Map of 18 sample districts; circle size and colour show water stress
+
+Planner, officer
+
+Parallel Lab and Benchmarks
+
+Show the speed of parallel computing
+
+Runs the same batch three ways: single-core, multi-core, NumPy vectorised; explains Amdahl's Law
+
+Student, researcher
+
+Dashboard + Hindi/English
+
+Save fields and use own language
+
+Saves fields in the browser only (no account); switch between English and Hindi
+
+Farmer
+
+6.3 INITIAL SYSTEM FLOW
+
+Figure 6.1: Simple system flow of PaaniPlan (User → Website → Calculation → Answer)
+
+Figure 6.2: Architecture of the PaaniPlan prototype. The dashed box shows parts that are only planned, not built.
+
+In simple words: the user fills a small form on the website. The website checks the answers and sends them to the server. The server does four steps of maths: (1) works out how much water the air pulls out of the soil and plant each day (ETo); (2) multiplies it by the crop factor to get the crop's need (ETc); (3) subtracts useful rain; (4) divides by how efficient the watering method is (drip wastes the least, flood wastes the most). The soil type decides how many days to wait between waterings. The answer comes back as one simple line.
+
+6.4 Preliminary Technology Stack
+
+Layer
+
+Proposed Technology
+
+Reason for Selection
+
+Frontend / Interface
+
+Next.js, TypeScript, Tailwind CSS
+
+Fast, modern websites; easy to make pages look clean on phone and laptop
+
+Backend
+
+FastAPI (Python), Pydantic
+
+Python is simple and good for maths; FastAPI is fast and checks data types
+
+Database
+
+Curated sample dataset (district climate, soil and crop tables); browser local storage for the dashboard
+
+Enough for a demo; no personal data leaves the user's device
+
+Analytics / ML / Logic
+
+FAO-56 crop factors, Hargreaves-Samani formula, NumPy, ProcessPoolExecutor
+
+Trusted science; NumPy and multi-core processing make big batches faster
+
+Hosting / Cloud
+
+Vercel (website at pani-plan.vercel.app) + separate backend service
+
+Free and easy to put the site online for anyone to try
+
+Security
+
+Zod (frontend) and Pydantic (backend) input checking; no login, no personal data stored
+
+Stops wrong or harmful input; protects user privacy
+
+6.5 Expected Outcomes
+
+A farmer gets one clear line of advice, such as "Apply about 18 mm of water every 6 days".
+
+Less water and electricity wasted, and fewer crops harmed by too little water.
+
+Advice is available in both English and Hindi.
+
+Planners can see which districts face more water stress on a map.
+
+Students can see, with real timings, how parallel computing speeds up many calculations, and where it stops helping (Amdahl's Law).
+
+6.6 Prototype Interface 
+
+Our working prototype is live at https://pani-plan.vercel.app/ . The main screens are described below. Screenshots of each screen should be pasted in the boxes.
+
+Screen 1: Home page
+
+The home page says "Every drop has a purpose." It explains the 3-step process: understand conditions, calculate the need, and give plain-language advice (for example "Apply ~18mm every 6 days"). It has buttons for "Get irrigation advice" and "Explore our technology", and a language switch for English and हिंदी.
+
+[Paste screenshot of Home page here - https://pani-plan.vercel.app/]
+
+Figure 6.3: PaaniPlan - Home page
+
+Screen 2: Advisory (Irrigation Calculator)
+
+The heading reads "Know exactly how much water to apply, and when." The user picks a district, crop and growth stage (plus irrigation method and field size) and gets a one-line watering recommendation in seconds, based on the FAO-56 water balance.
+
+Figure 6.4: PaaniPlan - Advisory (Irrigation Calculator)
+
+Screen 3: Water Map
+
+A map of India showing baseline water stress in 18 sample districts. Bigger and darker circles mean more water stress. Clicking a circle highlights that district in the list. It is clearly marked "Demo dataset".
+
+Figure 6.5: PaaniPlan - Water Map
+
+Screen 4: Explore crops and districts
+
+Shows the sample crop list and district data side by side, with filters by category or state, so you can see which districts grow which crops.
+
+Figure 6.6: PaaniPlan - Explore crops and districts
+
+Screen 5: Parallel Processing Lab
+
+The heading says "Trigger a real multi-core benchmark, right now." The user sets the workload size (default 15,000 field calculations) and presses Run. The server does the same job three ways (single-core loop, multi-core worker pool, NumPy vectorised) and shows the time for each. The Benchmarks page explains Amdahl's Law.
+
+Figure 6.7: PaaniPlan - Parallel Processing Lab
+
+Screen 6: How It Works / FAQ / About
+
+Explains the four calculation steps and the technology used. The FAQ honestly says the weather data is not live, there is no GPU mode, small jobs can run slower in parallel, and the advice is a starting point, not a replacement for expert advice.
+
+Figure 6.8: PaaniPlan - How It Works / FAQ / About
+
+6.8 Limitations of Current Stage
+
+This prototype is a first version. It uses a sample dataset of district climate and soil values, not live government or weather data. Its advice has not been tested on a real farm, so it should be treated as a starting point and checked with local agriculture experts. Live data feeds, SMS alerts, sensors, machine learning and GPU processing are planned ideas only and are not built yet. Benchmark speeds depend on the server and the size of the job, so they are not promises of real-world performance.
+
+CHAPTER 7
+
+CONCLUSION AND FUTURE SCOPE
+
+7.1 Conclusion
+
+This project took us on a full learning journey. We started by studying 15 Computer Engineering jobs and the skills they need. Then we visited C-DAC, Pune, where we saw India's own supercomputers and learned how huge problems are solved by splitting them into many small parts. From what we saw, we listed three real problems and gave them marks, and the farm-water problem scored the highest.
+
+We studied who is affected (farmers, workers, officers and planners) and how watering is done today, mostly by guesswork. We read 10 research papers and compared tools like CROPWAT, Meghdoot and Soqia-Advice. We found the gap: the science exists, but there is no simple, India-focused tool that gives a farmer one clear answer. To fill this gap, we built PaaniPlan, a working website that gives plain-language watering advice in English and Hindi and shows how parallel computing can make many calculations faster. The prototype uses sample data, so the next step is to connect real data and test it with farmers.
+
+7.2 Future Scope
+
+Connect live weather data and verified government soil and crop data in place of the sample dataset.
+
+Test the advice on real farms and get it checked by agriculture experts.
+
+Send daily advice by SMS or WhatsApp to farmers who do not use websites.
+
+Add more Indian languages such as Marathi, Tamil and Telugu.
+
+Use soil-moisture sensors (IoT) to measure the field directly.
+
+Use machine learning to improve the advice for each local area.
+
+Run early-morning batch advice for many districts on bigger servers or HPC systems like those at C-DAC.
+
+REFERENCES
+
+We have used the IEEE citation style throughout this report.
+
+[1] J. A. Andrade and R. Ventura, "Estimation of reference evapotranspiration by Hargreaves-Samani and Penman-Monteith methods in Mediterranean environment (Portugal)," Finisterra, vol. 59, no. 127, pp. 115-136, 2024, doi: 10.18055/Finis33850.
+
+[2] A. Ezzahri, S. Boujdi, M. Bouziani, R. Yaagoubi, and L. Kenny, "Soqia-Advice: A Web-GIS advisory platform for efficient irrigation in arboriculture," AgriEngineering, vol. 6, no. 2, pp. 1594-1618, 2024, doi: 10.3390/agriengineering6020091.
+
+[3] Adnan, "Performance evaluation on work-stealing featured parallel programs on asymmetric performance multicore processors," Array, vol. 18, p. 100311, 2023, doi: 10.1016/j.array.2023.100311.
+
+[4] H.-J. Kim, S. Chandrasekara, H.-H. Kwon, C. H. R. Lima, and T.-W. Kim, "A novel multi-scale parameter estimation approach to the Hargreaves-Samani equation for estimation of Penman-Monteith reference evapotranspiration," Agricultural Water Management, vol. 275, p. 108038, Jan. 2023, doi: 10.1016/j.agwat.2022.108038.
+
+[5] S. Amani and H. Shafizadeh-Moghadam, "A review of machine learning models and influential factors for estimating evapotranspiration using remote sensing and ground-based data," Agricultural Water Management, vol. 284, p. 108324, Jun. 2023, doi: 10.1016/j.agwat.2023.108324.
+
+[6] D. Vallejo-Gómez, M. Osorio, and C. A. Hincapié, "Smart irrigation systems in agriculture: A systematic review," Agronomy, vol. 13, no. 2, p. 342, 2023, doi: 10.3390/agronomy13020342.
+
+[7] G. P. Pereira, M. Z. Chaari, and F. Daroge, "IoT-enabled smart drip irrigation system using ESP32," IoT, vol. 4, no. 3, pp. 221-243, 2023, doi: 10.3390/iot4030012.
+
+[8] E. S. Hassan, A. A. Alharbi, A. S. Oshaba, and A. El-Emary, "Enhancing smart irrigation efficiency: A new WSN-based localization method for water conservation," Water, vol. 16, no. 5, p. 672, 2024, doi: 10.3390/w16050672.
+
+[9] R. K. Kasera and T. Acharjee, "A comprehensive IoT edge based smart irrigation system for tomato cultivation," Internet of Things, vol. 28, p. 101356, 2024, doi: 10.1016/j.iot.2024.101356.
+
+[10] A. Kaur, D. P. Bhatt, and L. Raja, "Developing a hybrid irrigation system for smart agriculture using IoT sensors and machine learning," Journal of Sensors, vol. 2024, Art. no. 6676907, 2024, doi: 10.1155/2024/6676907.
+
+[11] Y. Dong, B. Werling, Z. Cao, and G. Li, "Implementation of an in-field IoT system for precision irrigation management," Frontiers in Water, vol. 6, p. 1353597, 2024, doi: 10.3389/frwa.2024.1353597.
+
+[12] S. Banerjee, S. Majumdar, J. Saha, et al., "Groundwater potential mapping in India: A review of approaches and pathways for sustainable management," Cambridge Prisms: Drylands, vol. 3, p. e8, 2025, doi: 10.1017/dry.2025.10008.
+
+[13] S. Rana, Gaurav, B. Siwach, and M. S. Panwar, "Assessment and challenges of groundwater resources of India: A comprehensive study of current status and sustainability measures," Journal of Mountain Research, vol. 19, no. 2, pp. 15-28, 2024, doi: 10.51220/jmr.v19-i2.2.
+
+[14] Central Ground Water Board (CGWB), "National Compilation on Dynamic Ground Water Resources of India, 2023," Ministry of Jal Shakti, Department of Water Resources, Government of India, New Delhi, Dec. 2023.
+
+[15] Central Ground Water Board (CGWB), "National Compilation on Dynamic Ground Water Resources of India, 2024," Ministry of Jal Shakti, Department of Water Resources, Government of India, New Delhi, Oct. 2024.
+
+ 
+
+[16] H. Al-Naji, M. A. A. Al-Furjan, and Y. Shen, "Attention is all water need: Multistep time series irrigation water demand forecasting in irrigation districts," Computers and Electronics in Agriculture, vol. 218, p. 108723, Mar. 2024, doi: 10.1016/j.compag.2024.108723.
+
+[17] J. Bellvert et al., "A spatial machine-learning model for predicting crop water stress index for precision irrigation of vineyards," Computers and Electronics in Agriculture, vol. 227, p. 109578, Dec. 2024, doi: 10.1016/j.compag.2024.109578.
+
+[18] F. Viani et al., "Fuzzy-IoT smart irrigation system for precision scheduling and monitoring," Computers and Electronics in Agriculture, vol. 215, p. 108407, Dec. 2023, doi: 10.1016/j.compag.2023.108407.
+
+[19] M. Garcés-Sánchez et al., "Adaptive and predictive decision support system for irrigation scheduling: An approach integrating humans in the control loop," Computers and Electronics in Agriculture, vol. 217, p. 108640, Feb. 2024, doi: 10.1016/j.compag.2024.108640.
+
+[20] M. J. Hoque, M. S. Islam, and M. A. Khaliluzzaman, "A fuzzy logic- and internet of things-based smart irrigation system," Engineering Proceedings, vol. 58, no. 1, p. 93, 2023, doi: 10.3390/ecsa-10-16243.
+
+[21] J. A. Zúñiga-Alarcón, R. M. Quispe, and E. C. Morales, "Improvement of Hargreaves-Samani reference evapotranspiration estimates in the Peruvian Altiplano," Water, vol. 15, no. 7, p. 1410, 2023, doi: 10.3390/w15071410.
+
+[22] P. S. D. Silva et al., "Assessing the impact of IrrigaSys decision support system on farmers' irrigation practices in Southern Portugal: A post evaluation study," Land, vol. 13, no. 1, p. 66, Dec. 2023, doi: 10.3390/land13010066.
+
+[23] G. Wang, L. Zhang, and X. Liu, "Multi-objective decision support for irrigation systems based on skyline query," Applied Sciences, vol. 14, no. 3, p. 1189, Jan. 2024, doi: 10.3390/app14031189.
+
+[24] A. Karbowski, "Amdahl's and Gustafson-Barsis's laws revisited: Theoretical limits and asymptotic bounds on parallel computing acceleration," Open Science Preprint Archive / ResearchGate, 2025, doi: 10.13140/RG.2.2.39859.99895.
+
+[25] T. Rauber and G. Rünger, Parallel Programming: For Multicore and Cluster Systems, 3rd ed. Berlin, Germany: Springer Nature, 2023, doi: 10.1007/978-3-031-28924-8.
+
+[26] M. S. Benilov and L. G. Benilova, "Speedup and efficiency of computational parallelization: A unifying approach and asymptotic analysis," Journal of Parallel and Distributed Computing, vol. 187, p. 104835, May 2024, doi: 10.1016/j.jpdc.2023.104835.
+
+[27] S. Caviedes-Voullième et al., "SERGHEI v2.0: Introducing a performance-portable, high-performance parallel-computing shallow-water solver for hydrology and environmental hydraulics," Geoscientific Model Development, vol. 16, no. 3, pp. 905-928, 2023, doi: 10.5194/gmd-16-905-2023.
+
+[28] R. G. Allen, L. S. Pereira, D. Raes, and M. Smith, Crop Evapotranspiration: Guidelines for Computing Crop Water Requirements, FAO Irrigation and Drainage Paper No. 56 (Rev. 1 updated ed.), Rome, Italy: Food and Agriculture Organization of the United Nations, 2024, doi: 10.4060/cd6621en.
+
+[29] C. R. Harris et al., "Array programming with NumPy," Nature, vol. 585, no. 7825, pp. 357-362, Sep. 2020, doi: 10.1038/s41586-020-2649-2.
+
+[30] Centre for Development of Advanced Computing (C-DAC), "National Supercomputing Mission (NSM) and High Performance Computing Facilities: PARAM Series & AIRAWAT," C-DAC Innovation Park, Pune, India, 2026. [Online]. Available: https://www.cdac.in
+
+[31] H. Pandey, Jatin, and J. Yadav, "PaaniPlan: Large-Scale Soil and Crop Data Analysis for Efficient Agricultural Water Management," Live Web Prototype, 2026. [Online]. Available: https://pani-plan.vercel.app/ (accessed Oct. 21, 2026).

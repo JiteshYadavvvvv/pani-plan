@@ -48,6 +48,9 @@ const en = {
 
   "language.english": "English",
   "language.hindi": "हिंदी",
+  "language.marathi": "मराठी",
+  "language.tamil": "தமிழ்",
+  "language.telugu": "తెలుగు",
   "language.toggleLabel": "Change language",
 
   "stress.low": "Low stress",

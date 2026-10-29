@@ -3,10 +3,13 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import en, { type TranslationKey } from "./en";
 import hi from "./hi";
+import mr from "./mr";
+import ta from "./ta";
+import te from "./te";
 
-export type Locale = "en" | "hi";
+export type Locale = "en" | "hi" | "mr" | "ta" | "te";
 
-const dictionaries: Record<Locale, Record<TranslationKey, string>> = { en, hi };
+const dictionaries: Record<Locale, Record<TranslationKey, string>> = { en, hi, mr, ta, te };
 const STORAGE_KEY = "paaniplan-locale";
 
 interface LanguageContextValue {
@@ -23,8 +26,8 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     try {
       const stored = window.localStorage.getItem(STORAGE_KEY);
-      if (stored === "en" || stored === "hi") {
-        setLocaleState(stored);
+      if (stored === "en" || stored === "hi" || stored === "mr" || stored === "ta" || stored === "te") {
+        setLocaleState(stored as Locale);
       }
     } catch {}
   }, []);

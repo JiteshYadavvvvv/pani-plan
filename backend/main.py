@@ -3,7 +3,7 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from routers import advisory, explore, lab, crop_analysis, weather, observations, fisheries
+from routers import advisory, explore, lab, crop_analysis, weather, observations, fisheries, notifications, iot, ml_advisory, batch
 
 app = FastAPI(title="PaaniPlan API", version="1.0.0")
 
@@ -26,6 +26,10 @@ app.include_router(crop_analysis.router)
 app.include_router(weather.router)
 app.include_router(observations.router)
 app.include_router(fisheries.router)
+app.include_router(notifications.router)
+app.include_router(iot.router)
+app.include_router(ml_advisory.router)
+app.include_router(batch.router)
 
 
 @app.get("/api/health")

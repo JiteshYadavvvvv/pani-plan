@@ -41,6 +41,8 @@ export const cropOutSchema = z.object({
   category: z.string(),
   root_depth_m: z.number(),
   typical_season_days: z.number(),
+  typical_water_need_mm: z.string().default("450–650 mm"),
+  fao_source: z.string().default("FAO Irrigation and Drainage Paper No. 56"),
 });
 export type CropOut = z.infer<typeof cropOutSchema>;
 
@@ -53,6 +55,12 @@ export const districtOutSchema = z.object({
   dominant_soil: soilTypeSchema,
   baseline_water_stress_index: z.number(),
   primary_crops: z.array(z.string()),
+  cgwb_stage_of_extraction_pct: z.number().default(65.0),
+  cgwb_category: z.string().default("Safe"),
+  annual_extractable_gw_mcm: z.number().default(1200.0),
+  gw_extraction_for_irrigation_mcm: z.number().default(750.0),
+  source_citation: z.string().default("Central Ground Water Board (CGWB), Ministry of Jal Shakti, 2023-2024"),
+  data_period: z.string().default("2023-2024"),
   is_sample_data: z.boolean().default(false),
 });
 export type DistrictOut = z.infer<typeof districtOutSchema>;
@@ -66,6 +74,12 @@ export const waterStressMapPointSchema = z.object({
   stress_index: z.number(),
   stress_level: stressLevelSchema,
   primary_crops: z.array(z.string()),
+  cgwb_stage_of_extraction_pct: z.number().default(65.0),
+  cgwb_category: z.string().default("Safe"),
+  annual_extractable_gw_mcm: z.number().default(1200.0),
+  gw_extraction_for_irrigation_mcm: z.number().default(750.0),
+  source_citation: z.string().default("Central Ground Water Board (CGWB), Ministry of Jal Shakti, 2023-2024"),
+  data_period: z.string().default("2023-2024"),
   is_sample_data: z.boolean().default(false),
 });
 export type WaterStressMapPoint = z.infer<typeof waterStressMapPointSchema>;
@@ -237,3 +251,105 @@ export const observationOutSchema = z.object({
   created_at: z.string(),
 });
 export type ObservationOut = z.infer<typeof observationOutSchema>;
+
+export const weatherAdvisoryResponseSchema = z.object({
+  district_id: z.string(),
+  district_name: z.string(),
+  forecast_source: z.string(),
+  forecast_period: z.string(),
+  summary_headline: z.string(),
+  rainfall_analysis: z.string(),
+  heat_stress_assessment: z.string(),
+  irrigation_recommendation: z.string(),
+  next_review_date: z.string(),
+  uncertainty_note: z.string(),
+  provider: z.string(),
+  is_ai_generated: z.boolean(),
+  total_expected_rain_mm: z.number(),
+});
+export type WeatherAdvisoryResponse = z.infer<typeof weatherAdvisoryResponseSchema>;
+
+export const subscriptionResponseSchema = z.object({
+  id: z.string(),
+  phone_masked: z.string(),
+  channel: z.string(),
+  district_name: z.string(),
+  crop_name: z.string(),
+  preferred_language: z.string(),
+  status: z.enum(["active", "unsubscribed"]),
+  created_at: z.string(),
+  provider_status: z.string(),
+});
+export type SubscriptionResponse = z.infer<typeof subscriptionResponseSchema>;
+
+export const notificationStatusResponseSchema = z.object({
+  sms_configured: z.boolean(),
+  whatsapp_configured: z.boolean(),
+  active_subscribers_count: z.number(),
+  sms_gateway: z.string(),
+  whatsapp_gateway: z.string(),
+});
+export type NotificationStatusResponse = z.infer<typeof notificationStatusResponseSchema>;
+
+export const notificationDispatchPreviewSchema = z.object({
+  channel: z.string(),
+  phone_masked: z.string(),
+  language: z.string(),
+  advisory_text: z.string(),
+  dispatched: z.boolean(),
+  provider: z.string(),
+  status_detail: z.string(),
+});
+export type NotificationDispatchPreview = z.infer<typeof notificationDispatchPreviewSchema>;
+
+export const fieldIoTStatusSchema = z.object({
+  has_sensor: z.boolean(),
+  field_id: z.string(),
+  device_id: z.string().nullable(),
+  sensor_model: z.string().nullable(),
+  connection_status: z.enum(["online", "idle", "offline", "unlinked"]),
+  latest_reading: z.record(z.unknown()).nullable(),
+  sensor_recommendation: z.string().nullable(),
+});
+export type FieldIoTStatus = z.infer<typeof fieldIoTStatusSchema>;
+
+export const localizedMlResponseSchema = z.object({
+  district_id: z.string(),
+  district_name: z.string(),
+  crop_name: z.string(),
+  fao56_baseline_eto_mm_day: z.number(),
+  ml_adjusted_eto_mm_day: z.number(),
+  correction_delta_mm_day: z.number(),
+  correction_factor: z.number(),
+  uncertainty_margin_mm_day: z.number(),
+  baseline_etc_mm_day: z.number(),
+  ml_adjusted_etc_mm_day: z.number(),
+  scientific_explanation: z.string(),
+  model_provenance: z.string(),
+});
+export type LocalizedMlResponse = z.infer<typeof localizedMlResponseSchema>;
+
+export const districtAdvisorySummarySchema = z.object({
+  district_id: z.string(),
+  district_name: z.string(),
+  state: z.string(),
+  representative_crop: z.string(),
+  eto_mm_day: z.number(),
+  etc_mm_day: z.number(),
+  net_irrigation_mm_day: z.number(),
+  dispatch_priority: z.enum(["urgent", "standard", "standby"]),
+});
+export type DistrictAdvisorySummary = z.infer<typeof districtAdvisorySummarySchema>;
+
+export const batchDispatchRunResponseSchema = z.object({
+  batch_id: z.string(),
+  executed_at: z.string(),
+  mode_used: z.string(),
+  total_calculations: z.number(),
+  elapsed_time_ms: z.number(),
+  throughput_calcs_per_sec: z.number(),
+  worker_count: z.number(),
+  district_summaries: z.array(districtAdvisorySummarySchema),
+  execution_notes: z.string(),
+});
+export type BatchDispatchRunResponse = z.infer<typeof batchDispatchRunResponseSchema>;

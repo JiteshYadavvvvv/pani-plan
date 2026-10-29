@@ -13,6 +13,13 @@ import {
   waterQualityStandardSchema,
   waterStressMapPointSchema,
   weatherResponseSchema,
+  weatherAdvisoryResponseSchema,
+  subscriptionResponseSchema,
+  notificationStatusResponseSchema,
+  notificationDispatchPreviewSchema,
+  fieldIoTStatusSchema,
+  localizedMlResponseSchema,
+  batchDispatchRunResponseSchema,
   type AdvisoryRequest,
   type AdvisoryResponse,
   type BenchmarkRequest,
@@ -28,6 +35,13 @@ import {
   type WaterQualityStandard,
   type WaterStressMapPoint,
   type WeatherResponse,
+  type WeatherAdvisoryResponse,
+  type SubscriptionResponse,
+  type NotificationStatusResponse,
+  type NotificationDispatchPreview,
+  type FieldIoTStatus,
+  type LocalizedMlResponse,
+  type BatchDispatchRunResponse,
 } from "./schemas";
 import { z } from "zod";
 
@@ -248,4 +262,119 @@ export async function saveObservation(payload: ObservationCreate): Promise<Obser
 
 export function fetchObservations(): Promise<ObservationOut[]> {
   return requestJson("/api/observations", z.array(observationOutSchema));
+}
+
+export async function fetchWeatherAdvisory(payload: {
+  district_id: string;
+  crop_name?: string;
+  growth_stage?: string;
+  soil_type?: string;
+  language?: string;
+}): Promise<WeatherAdvisoryResponse> {
+  return requestJson("/api/weather/ai-advisory", weatherAdvisoryResponseSchema, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function subscribeNotifications(payload: {
+  phone_number: string;
+  channel: "sms" | "whatsapp";
+  district_id: string;
+  crop_id: string;
+  preferred_language: string;
+  consent_given: boolean;
+  farmer_name?: string;
+}): Promise<SubscriptionResponse> {
+  return requestJson("/api/notifications/subscribe", subscriptionResponseSchema, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}
+
+export function fetchNotificationStatus(): Promise<NotificationStatusResponse> {
+  return requestJson("/api/notifications/status", notificationStatusResponseSchema);
+}
+
+export function fetchSubscriptions(): Promise<SubscriptionResponse[]> {
+  return requestJson("/api/notifications/subscriptions", z.array(subscriptionResponseSchema));
+}
+
+export async function unsubscribeNotification(subscriptionId: string): Promise<{ status: string }> {
+  return requestJson(`/api/notifications/subscribe/${encodeURIComponent(subscriptionId)}`, z.object({ status: z.string() }), {
+    method: "DELETE",
+  });
+}
+
+export async function previewNotificationAdvisory(subscriptionId: string): Promise<NotificationDispatchPreview> {
+  return requestJson(`/api/notifications/preview-advisory?subscription_id=${encodeURIComponent(subscriptionId)}`, notificationDispatchPreviewSchema, {
+    method: "POST",
+  });
+}
+
+export async function registerIoTDevice(payload: {
+  device_id: string;
+  field_id: string;
+  sensor_model?: string;
+  location_description?: string;
+}): Promise<{ device_id: string; api_token: string; ingest_endpoint: string }> {
+  return requestJson("/api/iot/register-device", z.object({
+    device_id: z.string(),
+    api_token: z.string(),
+    ingest_endpoint: z.string(),
+  }), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}
+
+export function fetchFieldIoTStatus(fieldId: string): Promise<FieldIoTStatus> {
+  return requestJson(`/api/iot/field/${encodeURIComponent(fieldId)}`, fieldIoTStatusSchema);
+}
+
+export async function ingestIoTReading(payload: {
+  device_id: string;
+  soil_moisture_pct: number;
+  soil_temperature_c?: number;
+  battery_voltage_v?: number;
+}): Promise<{ status: string; water_depletion_risk: string; actionable_advice: string }> {
+  return requestJson("/api/iot/ingest", z.object({
+    status: z.string(),
+    water_depletion_risk: z.string(),
+    actionable_advice: z.string(),
+  }), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function fetchLocalizedMlAdvisory(payload: {
+  district_id: string;
+  crop_id: string;
+  growth_stage?: string;
+  manual_tmax_c?: number;
+  manual_tmin_c?: number;
+  soil_type?: string;
+}): Promise<LocalizedMlResponse> {
+  return requestJson("/api/ml/localized-advisory", localizedMlResponseSchema, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function runBatchDispatch(payload: {
+  mode: "vectorized" | "multiprocess";
+  workload_multiplier: number;
+  workers: number;
+}): Promise<BatchDispatchRunResponse> {
+  return requestJson("/api/batch/morning-dispatch", batchDispatchRunResponseSchema, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
 }

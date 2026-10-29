@@ -25,6 +25,8 @@ def list_crops() -> list[CropOut]:
             category=c.category,
             root_depth_m=c.root_depth_m,
             typical_season_days=c.typical_season_days,
+            typical_water_need_mm=c.typical_water_need_mm,
+            fao_source=c.fao_source,
         )
         for c in CROPS.values()
     ]
@@ -42,6 +44,12 @@ def list_districts() -> list[DistrictOut]:
             dominant_soil=d.dominant_soil,
             baseline_water_stress_index=d.baseline_water_stress_index,
             primary_crops=d.primary_crops,
+            cgwb_stage_of_extraction_pct=d.cgwb_stage_of_extraction_pct,
+            cgwb_category=d.cgwb_category,
+            annual_extractable_gw_mcm=d.annual_extractable_gw_mcm,
+            gw_extraction_for_irrigation_mcm=d.gw_extraction_for_irrigation_mcm,
+            source_citation=d.source_citation,
+            data_period=d.data_period,
         )
         for d in DISTRICTS.values()
     ]
@@ -59,6 +67,12 @@ def water_stress_map() -> list[WaterStressMapPoint]:
             stress_index=d.baseline_water_stress_index,
             stress_level=_stress_level_from_index(d.baseline_water_stress_index),
             primary_crops=d.primary_crops,
+            cgwb_stage_of_extraction_pct=d.cgwb_stage_of_extraction_pct,
+            cgwb_category=d.cgwb_category,
+            annual_extractable_gw_mcm=d.annual_extractable_gw_mcm,
+            gw_extraction_for_irrigation_mcm=d.gw_extraction_for_irrigation_mcm,
+            source_citation=d.source_citation,
+            data_period=d.data_period,
         )
         for d in DISTRICTS.values()
     ]

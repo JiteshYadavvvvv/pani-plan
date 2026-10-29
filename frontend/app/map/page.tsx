@@ -40,7 +40,7 @@ const copy = {
     eyebrow: "Regional water stress",
     title: "India water-stress map",
     subtitle:
-      "A district-level view of baseline irrigation water stress across 18 sample districts, built for demonstration — not a live satellite or government feed.",
+      "A district-level analysis of baseline irrigation water stress and groundwater draft across 18 agricultural districts, sourced from the Central Ground Water Board (CGWB) Dynamic Ground Water Resources National Assessment.",
     caption:
       "Circle size and colour both reflect the baseline water-stress index. Click a marker or a list row to highlight it on both.",
     loading: "Loading the water-stress map…",
@@ -83,7 +83,7 @@ const copy = {
     eyebrow: "क्षेत्रीय जल-तनाव",
     title: "भारत जल-तनाव मानचित्र",
     subtitle:
-      "18 नमूना जिलों में आधारभूत सिंचाई जल-तनाव का जिला-स्तरीय दृश्य, केवल प्रदर्शन के लिए बनाया गया — यह कोई लाइव सैटेलाइट या सरकारी फीड नहीं है।",
+      "केंद्रीय भूजल बोर्ड (CGWB) गतिशील भूजल संसाधन राष्ट्रीय आकलन 2023-2024 पर आधारित 18 प्रमुख कृषि जिलों में भूजल व सिंचाई जल-तनाव का आधिकारिक जिला-स्तरीय विश्लेषण।",
     caption:
       "वृत्त का आकार और रंग दोनों आधारभूत जल-तनाव सूचकांक दर्शाते हैं। किसी मार्कर या सूची की पंक्ति पर क्लिक करें ताकि वह दोनों जगह हाइलाइट हो जाए।",
     loading: "जल-तनाव मानचित्र लोड हो रहा है…",

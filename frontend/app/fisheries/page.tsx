@@ -791,7 +791,7 @@ export default function FisheriesPage() {
                     <Badge
                       tone={
                         waterEvalResult.overall_status === "optimal"
-                          ? "forest"
+                          ? "low"
                           : waterEvalResult.overall_status === "acceptable"
                           ? "gold"
                           : "severe"

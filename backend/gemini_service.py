@@ -199,3 +199,95 @@ def call_gemini_multimodal(
         raise last_error
     raise RuntimeError("All Gemini models failed to process the request.")
 
+
+def call_gemini_json(
+    prompt_text: str,
+    system_instruction: str | None = None,
+) -> tuple[dict[str, Any], str]:
+    api_key = get_api_key()
+    if not api_key:
+        raise ValueError("GEMINI_API_KEY environment variable is not configured on the backend.")
+
+    payload: dict[str, Any] = {
+        "contents": [
+            {
+                "role": "user",
+                "parts": [{"text": prompt_text}],
+            }
+        ],
+        "generationConfig": {
+            "responseMimeType": "application/json",
+            "temperature": 0.2,
+        },
+    }
+
+    if system_instruction:
+        payload["systemInstruction"] = {
+            "role": "system",
+            "parts": [{"text": system_instruction}],
+        }
+
+    encoded_payload = json.dumps(payload).encode("utf-8")
+    models_to_try = [PRIMARY_MODEL, FALLBACK_MODEL]
+    last_error: Exception | None = None
+
+    for model_name in models_to_try:
+        url = f"{GEMINI_API_BASE}/{model_name}:generateContent?key={api_key}"
+        req = urllib.request.Request(
+            url,
+            data=encoded_payload,
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+
+        try:
+            with urllib.request.urlopen(req, timeout=25) as resp:
+                resp_data = json.loads(resp.read().decode("utf-8"))
+
+            candidates = resp_data.get("candidates", [])
+            if not candidates:
+                feedback = resp_data.get("promptFeedback", {})
+                block_reason = feedback.get("blockReason", "No candidates returned")
+                raise RuntimeError(f"Gemini declined to generate response: {block_reason}")
+
+            part_text = candidates[0].get("content", {}).get("parts", [{}])[0].get("text", "")
+            if not part_text:
+                raise RuntimeError("Gemini returned an empty response.")
+
+            clean_text = part_text.strip()
+            if clean_text.startswith("```"):
+                lines = clean_text.splitlines()
+                if lines and lines[0].startswith("```"):
+                    lines = lines[1:]
+                if lines and lines[-1].startswith("```"):
+                    lines = lines[:-1]
+                clean_text = "\n".join(lines).strip()
+
+            parsed_json = json.loads(clean_text)
+            return parsed_json, model_name
+
+        except urllib.error.HTTPError as err:
+            last_error = err
+            try:
+                err_body = json.loads(err.read().decode("utf-8"))
+                detail_msg = err_body.get("error", {}).get("message", err.reason)
+            except Exception:
+                detail_msg = err.reason
+
+            if err.code == 404:
+                continue
+            if err.code == 400:
+                raise ValueError(f"Gemini API Bad Request: {detail_msg}")
+            if err.code in (401, 403):
+                raise PermissionError(f"Gemini API authentication failed: {detail_msg}")
+            if err.code == 429:
+                raise RuntimeError(f"Gemini API rate limit or quota exceeded: {detail_msg}")
+            raise RuntimeError(f"Gemini API error (HTTP {err.code}): {detail_msg}")
+
+        except json.JSONDecodeError as err:
+            raise ValueError(f"Gemini returned non-JSON text: {err}")
+
+    if last_error:
+        raise last_error
+    raise RuntimeError("All Gemini models failed to process the request.")
+

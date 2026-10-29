@@ -9,9 +9,9 @@ import { Card } from "@/components/ui/Card";
 import { Spinner } from "@/components/ui/Spinner";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { LinkButton } from "@/components/ui/Button";
-import { classifyApiError, fetchBenchmark } from "@/lib/api/client";
+import { classifyApiError, fetchBenchmark, runBatchDispatch } from "@/lib/api/client";
 import { apiErrorMessageKey } from "@/lib/api/errorMessage";
-import type { BenchmarkRequest, BenchmarkResponse } from "@/lib/api/schemas";
+import type { BenchmarkRequest, BenchmarkResponse, BatchDispatchRunResponse } from "@/lib/api/schemas";
 import { LabControls, type LabControlsCopy } from "./_components/LabControls";
 import { ModeLegend, SpeedupChart, TimeComparisonChart, buildChartRows } from "./_components/BenchmarkCharts";
 
@@ -155,6 +155,28 @@ export default function LabPage() {
     }
   }, [workloadSize, maxWorkersInput, t]);
 
+  const [batchMode, setBatchMode] = useState<"vectorized" | "multiprocess">("vectorized");
+  const [batchMultiplier, setBatchMultiplier] = useState(50);
+  const [batchRunning, setBatchRunning] = useState(false);
+  const [batchResult, setBatchResult] = useState<BatchDispatchRunResponse | null>(null);
+
+  const handleRunMorningBatch = useCallback(async () => {
+    setBatchRunning(true);
+    setBatchResult(null);
+    try {
+      const res = await runBatchDispatch({
+        mode: batchMode,
+        workload_multiplier: batchMultiplier,
+        workers: 4,
+      });
+      setBatchResult(res);
+    } catch {
+      alert("Morning batch calculation failed.");
+    } finally {
+      setBatchRunning(false);
+    }
+  }, [batchMode, batchMultiplier]);
+
   const isLoading = runState.status === "loading";
   const chartRows =
     runState.status === "success"
@@ -281,6 +303,122 @@ export default function LabPage() {
                 <div className="mt-4">
                   <SpeedupChart rows={chartRows} baselineLabel={c.baselineLabel} speedupUnitLabel={c.speedupUnit} />
                 </div>
+              </Card>
+
+              <Card className="border-forest/20 bg-ivory">
+                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-earth-light pb-4">
+                  <div>
+                    <span className="inline-flex items-center gap-1.5 rounded bg-sage-light px-2.5 py-1 text-xs font-semibold text-forest-dark">
+                      C-DAC Supercomputing Inspiration · High-Throughput Batch Engine
+                    </span>
+                    <h3 className="font-display text-xl font-semibold text-ink mt-2">
+                      Multi-District 06:00 AM Advisory Dispatch Pipeline
+                    </h3>
+                    <p className="text-xs text-muted mt-1 max-w-xl">
+                      Calculates simultaneous morning irrigation recommendations across all 18 agricultural districts with multi-tenant field portfolio scaling.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <select
+                      value={batchMode}
+                      onChange={(e) => setBatchMode(e.target.value as any)}
+                      className="rounded border border-earth-light bg-surface px-3 py-1.5 text-xs text-ink"
+                    >
+                      <option value="vectorized">NumPy C-Vectorized</option>
+                      <option value="multiprocess">ProcessPool (4 Cores)</option>
+                    </select>
+                    <select
+                      value={batchMultiplier}
+                      onChange={(e) => setBatchMultiplier(parseInt(e.target.value, 10))}
+                      className="rounded border border-earth-light bg-surface px-3 py-1.5 text-xs text-ink"
+                    >
+                      <option value="10">180 Field Portfolio</option>
+                      <option value="50">900 Field Portfolio</option>
+                      <option value="200">3,600 Field Portfolio</option>
+                    </select>
+                    <button
+                      type="button"
+                      disabled={batchRunning}
+                      onClick={handleRunMorningBatch}
+                      className="rounded bg-forest px-4 py-1.5 text-xs font-semibold text-ivory hover:bg-forest-dark transition-colors disabled:opacity-60"
+                    >
+                      {batchRunning ? "Processing Batch…" : "Run Morning Batch"}
+                    </button>
+                  </div>
+                </div>
+
+                {batchResult ? (
+                  <div className="mt-4 flex flex-col gap-4">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+                      <div className="rounded border border-earth-light/60 bg-surface p-2.5">
+                        <span className="text-[11px] text-muted block">Calculations Completed</span>
+                        <span className="font-display text-xl font-bold text-ink">
+                          {batchResult.total_calculations.toLocaleString("en-IN")}
+                        </span>
+                      </div>
+                      <div className="rounded border border-earth-light/60 bg-surface p-2.5">
+                        <span className="text-[11px] text-muted block">Execution Time</span>
+                        <span className="font-display text-xl font-bold text-forest">
+                          {batchResult.elapsed_time_ms.toFixed(1)} ms
+                        </span>
+                      </div>
+                      <div className="rounded border border-earth-light/60 bg-surface p-2.5">
+                        <span className="text-[11px] text-muted block">Batch Throughput</span>
+                        <span className="font-display text-xl font-bold text-forest">
+                          {Math.round(batchResult.throughput_calcs_per_sec).toLocaleString("en-IN")}{" "}
+                          <span className="text-xs font-normal text-muted">calcs/sec</span>
+                        </span>
+                      </div>
+                      <div className="rounded border border-earth-light/60 bg-surface p-2.5">
+                        <span className="text-[11px] text-muted block">Execution Mode</span>
+                        <span className="font-display text-xs font-bold text-ink block mt-1">
+                          {batchResult.mode_used}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="overflow-x-auto rounded border border-earth-light bg-surface">
+                      <table className="w-full text-left text-xs">
+                        <thead className="border-b border-earth-light bg-sand/30 text-ink">
+                          <tr>
+                            <th className="p-2.5">District</th>
+                            <th className="p-2.5">State</th>
+                            <th className="p-2.5">Crop</th>
+                            <th className="p-2.5">ETc</th>
+                            <th className="p-2.5">Net Irrigation</th>
+                            <th className="p-2.5">Morning Priority</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-earth-light/60">
+                          {batchResult.district_summaries.map((s) => (
+                            <tr key={s.district_id} className="hover:bg-sand/10">
+                              <td className="p-2.5 font-medium text-ink">{s.district_name}</td>
+                              <td className="p-2.5 text-muted">{s.state}</td>
+                              <td className="p-2.5 text-ink">{s.representative_crop}</td>
+                              <td className="p-2.5 text-muted">{s.etc_mm_day.toFixed(1)} mm/d</td>
+                              <td className="p-2.5 font-semibold text-forest">
+                                {s.net_irrigation_mm_day.toFixed(1)} mm
+                              </td>
+                              <td className="p-2.5">
+                                <span
+                                  className={`rounded px-2 py-0.5 text-[10px] font-bold uppercase ${
+                                    s.dispatch_priority === "urgent"
+                                      ? "bg-stress-severe/20 text-stress-severe"
+                                      : s.dispatch_priority === "standard"
+                                      ? "bg-stress-moderate/20 text-stress-moderate"
+                                      : "bg-stress-low/20 text-stress-low"
+                                  }`}
+                                >
+                                  {s.dispatch_priority}
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                ) : null}
               </Card>
             </div>
           ) : null}

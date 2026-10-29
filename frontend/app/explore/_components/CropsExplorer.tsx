@@ -241,7 +241,7 @@ export function CropsExplorer({
               <Badge tone="gold">{categoryLabels[selectedCrop.category]}</Badge>
             </div>
 
-            <dl className="mt-5 grid gap-4 sm:grid-cols-2">
+            <dl className="mt-5 grid gap-4 sm:grid-cols-3">
               <div>
                 <dt className="text-sm text-muted">{c.detailRootDepth}</dt>
                 <dd className="font-display text-2xl font-semibold text-forest">
@@ -254,7 +254,16 @@ export function CropsExplorer({
                   {selectedCrop.typical_season_days} {c.days}
                 </dd>
               </div>
+              <div>
+                <dt className="text-sm text-muted">Water Demand</dt>
+                <dd className="font-display text-xl font-semibold text-forest">
+                  {selectedCrop.typical_water_need_mm}
+                </dd>
+              </div>
             </dl>
+            <div className="mt-3 rounded border border-earth-light/60 bg-sand/30 px-3 py-1.5 text-xs text-muted">
+              <span className="font-medium text-ink">Agronomic Standard:</span> {selectedCrop.fao_source}
+            </div>
 
             <div className="mt-6">
               <p className="text-sm font-medium text-ink">

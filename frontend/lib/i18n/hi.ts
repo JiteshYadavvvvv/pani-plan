@@ -50,6 +50,9 @@ const hi: Record<TranslationKey, string> = {
 
   "language.english": "English",
   "language.hindi": "हिंदी",
+  "language.marathi": "मराठी",
+  "language.tamil": "தமிழ்",
+  "language.telugu": "తెలుగు",
   "language.toggleLabel": "भाषा बदलें",
 
   "stress.low": "कम तनाव",

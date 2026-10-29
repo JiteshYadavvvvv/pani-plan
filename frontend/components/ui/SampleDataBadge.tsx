@@ -7,7 +7,7 @@ import { Badge } from "./Badge";
 export function SampleDataBadge({ className }: { className?: string }) {
   const { t } = useLanguage();
   return (
-    <Badge tone="forest" className={className}>
+    <Badge tone="low" className={className}>
       <BookOpen className="h-3.5 w-3.5" />
       {t("common.sampleDataShort")}
     </Badge>

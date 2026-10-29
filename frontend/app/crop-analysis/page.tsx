@@ -1060,14 +1060,14 @@ export default function CropAnalysisPage() {
                 <div className="flex flex-col gap-4">
                   <div className="flex items-center justify-between rounded border border-earth-light bg-ivory p-3.5">
                     <span className="text-xs font-semibold text-muted">Configuration Status</span>
-                    <Badge tone={diagnosticInfo.configured ? "forest" : "severe"}>
+                    <Badge tone={diagnosticInfo.configured ? "low" : "severe"}>
                       {diagnosticInfo.configured ? "Key Configured" : "Missing Key"}
                     </Badge>
                   </div>
 
                   <div className="flex items-center justify-between rounded border border-earth-light bg-ivory p-3.5">
                     <span className="text-xs font-semibold text-muted">Connection Status</span>
-                    <Badge tone={diagnosticInfo.status === "connected" ? "forest" : "severe"}>
+                    <Badge tone={diagnosticInfo.status === "connected" ? "low" : "severe"}>
                       {diagnosticInfo.status.toUpperCase()}
                     </Badge>
                   </div>
