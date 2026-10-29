@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { CloudRain, Sparkles, Thermometer, Wind } from "lucide-react";
+import { CloudRain, Sparkles, Thermometer } from "lucide-react";
 import { ApiError, fetchWeather, fetchWeatherAdvisory } from "@/lib/api/client";
 import { Spinner } from "@/components/ui/Spinner";
 import { Button } from "@/components/ui/Button";

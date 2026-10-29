@@ -134,7 +134,7 @@ function serialFractionNote(fraction: number, c: SerialFractionCopy): string {
 
 export default function LabPage() {
   const { locale, t } = useLanguage();
-  const c = copy[locale];
+  const c = copy[locale === "en" ? "en" : "hi"];
 
   const [workloadSize, setWorkloadSize] = useState(15000);
   const [maxWorkersInput, setMaxWorkersInput] = useState("");
@@ -321,7 +321,12 @@ export default function LabPage() {
                   <div className="flex flex-wrap items-center gap-2">
                     <select
                       value={batchMode}
-                      onChange={(e) => setBatchMode(e.target.value as any)}
+                      onChange={(e) => {
+                        const mode = e.target.value;
+                        if (mode === "vectorized" || mode === "multiprocess") {
+                          setBatchMode(mode);
+                        }
+                      }}
                       className="rounded border border-earth-light bg-surface px-3 py-1.5 text-xs text-ink"
                     >
                       <option value="vectorized">NumPy C-Vectorized</option>

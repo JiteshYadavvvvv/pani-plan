@@ -159,7 +159,7 @@ type ReferenceDataState =
 
 export default function AdvisoryPage() {
   const { locale, t } = useLanguage();
-  const c = copy[locale];
+  const c = copy[locale === "en" ? "en" : "hi"];
 
   const [referenceData, setReferenceData] = useState<ReferenceDataState>({ status: "loading" });
   const [resultStatus, setResultStatus] = useState<ResultStatus>("idle");

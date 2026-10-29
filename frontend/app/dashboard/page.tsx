@@ -1,8 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
-  Bell,
   CheckCircle2,
   Cpu,
   Download,
@@ -12,21 +11,18 @@ import {
   Radio,
   Send,
   Smartphone,
-  Sparkles,
   Sprout,
   Trash2,
   Wifi,
 } from "lucide-react";
-import { useLanguage, type Locale } from "@/lib/i18n/LanguageProvider";
+import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { Reveal } from "@/lib/motion/Reveal";
 import { Section } from "@/components/ui/Section";
 import { Spinner } from "@/components/ui/Spinner";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
 import {
   ApiError,
-  classifyApiError,
   fetchAdvisory,
   fetchCrops,
   fetchDistricts,
@@ -40,7 +36,6 @@ import {
   subscribeNotifications,
   unsubscribeNotification,
 } from "@/lib/api/client";
-import { apiErrorMessageKey } from "@/lib/api/errorMessage";
 import type {
   AdvisoryRequest,
   CropOut,
@@ -52,12 +47,9 @@ import type {
   SubscriptionResponse,
 } from "@/lib/api/schemas";
 import { FieldForm, type FieldFormValues } from "./_components/FieldForm";
-import { FieldCard, type DashboardField, type FieldAdvisoryState, type FieldCardCopy } from "./_components/FieldCard";
+import { FieldCard, type DashboardField, type FieldAdvisoryState } from "./_components/FieldCard";
 
 const STORAGE_KEY = "paaniplan-fields";
-const GROWTH_STAGES = ["initial", "development", "mid_season", "late_season"] as const;
-const IRRIGATION_METHODS = ["drip", "sprinkler", "flood"] as const;
-
 type DashboardTab = "fields" | "notifications" | "iot" | "ml" | "export";
 
 const baseFieldCopy = {
@@ -95,7 +87,7 @@ const baseFieldCopy = {
   areaCaption: (hectares: string) => `${hectares} ha`,
 };
 
-const copy: Record<Locale, any> = {
+const copy = {
   en: {
     heroEyebrow: "Farmer Workspace",
     heroTitle: "Field Management & Multi-Channel Advisory",
@@ -290,7 +282,7 @@ function writeFieldsToStorage(fields: DashboardField[]) {
 
 export default function DashboardPage() {
   const { locale } = useLanguage();
-  const c: FieldCardCopy & Record<string, any> = copy[locale] || copy.en;
+  const c = copy[locale === "en" ? "en" : "hi"];
 
   const [activeTab, setActiveTab] = useState<DashboardTab>("fields");
   const [fields, setFields] = useState<DashboardField[]>([]);
@@ -425,8 +417,8 @@ export default function DashboardPage() {
         setSubPhone("");
         setSubConsent(false);
         fetchSubscriptions().then(setSubscriptions);
-      } catch (err: any) {
-        alert(err?.serverMessage || "Subscription failed. Check phone format.");
+      } catch (err: unknown) {
+        alert(err instanceof ApiError ? err.serverMessage || "Subscription failed. Check phone format." : "Subscription failed. Check phone format.");
       } finally {
         setSubscribing(false);
       }
@@ -463,8 +455,8 @@ export default function DashboardPage() {
         setIotRegSuccess(`Node registered! Auth token: ${res.api_token}`);
         setIotDeviceId("");
         fetchFieldIoTStatus(iotDeviceField).then(setSelectedFieldSensorStatus);
-      } catch (err: any) {
-        alert(err?.serverMessage || "Registration failed.");
+      } catch (err: unknown) {
+        alert(err instanceof ApiError ? err.serverMessage || "Registration failed." : "Registration failed.");
       } finally {
         setIotRegistering(false);
       }

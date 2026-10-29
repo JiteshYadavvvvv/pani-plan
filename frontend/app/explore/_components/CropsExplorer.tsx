@@ -95,8 +95,8 @@ export function CropsExplorer({
   onJumpToDistrict: (districtId: string) => void;
 }) {
   const { locale, t } = useLanguage();
-  const c = copy[locale];
-  const categoryLabels = CATEGORY_LABELS[locale];
+  const c = copy[locale === "en" ? "en" : "hi"];
+  const categoryLabels = CATEGORY_LABELS[locale === "en" ? "en" : "hi"];
 
   const [category, setCategory] = useState<Category | "all">("all");
   const [search, setSearch] = useState("");

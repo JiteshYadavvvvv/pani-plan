@@ -48,7 +48,7 @@ const copy = {
 
 export default function ExplorePage() {
   const { locale } = useLanguage();
-  const c = copy[locale];
+  const c = copy[locale === "en" ? "en" : "hi"];
 
   const [crops, setCrops] = useState<CropOut[] | null>(null);
   const [districts, setDistricts] = useState<DistrictOut[] | null>(null);

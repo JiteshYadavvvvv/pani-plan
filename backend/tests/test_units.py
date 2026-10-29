@@ -1,8 +1,118 @@
 from __future__ import annotations
 
+import math
 import os
+import random
 import sys
+import types
 import unittest
+
+if "fastapi" not in sys.modules:
+    try:
+        import fastapi
+    except ModuleNotFoundError:
+        fastapi = types.ModuleType("fastapi")
+        class APIRouter:
+            def get(self, *args, **kwargs):
+                return lambda f: f
+            def post(self, *args, **kwargs):
+                return lambda f: f
+            def delete(self, *args, **kwargs):
+                return lambda f: f
+        class HTTPException(Exception):
+            def __init__(self, status_code, detail):
+                super().__init__(detail)
+                self.status_code = status_code
+                self.detail = detail
+        fastapi.APIRouter = APIRouter
+        fastapi.HTTPException = HTTPException
+        fastapi.File = lambda *a, **k: None
+        fastapi.Form = lambda *a, **k: None
+        fastapi.UploadFile = type("UploadFile", (), {})
+        fastapi.Query = lambda *a, **k: None
+        fastapi.Header = lambda *a, **k: None
+        sys.modules["fastapi"] = fastapi
+
+if "pydantic" not in sys.modules:
+    try:
+        import pydantic
+    except ModuleNotFoundError:
+        pydantic = types.ModuleType("pydantic")
+        class BaseModel:
+            def __init__(self, **kwargs):
+                for k, v in kwargs.items():
+                    setattr(self, k, v)
+            def model_dump(self):
+                return dict(self.__dict__)
+        pydantic.BaseModel = BaseModel
+        pydantic.Field = lambda *a, **k: k.get("default", None)
+        sys.modules["pydantic"] = pydantic
+
+if "numpy" not in sys.modules:
+    try:
+        import numpy
+    except ModuleNotFoundError:
+        np = types.ModuleType("numpy")
+        np.pi = math.pi
+        class NumArray(list):
+            def tolist(self): return list(self)
+            def __sub__(self, other):
+                if isinstance(other, NumArray): return NumArray([a - b for a, b in zip(self, other)])
+                return NumArray([a - other for a in self])
+            def __add__(self, other):
+                if isinstance(other, NumArray): return NumArray([a + b for a, b in zip(self, other)])
+                return NumArray([a + other for a in self])
+            def __mul__(self, other):
+                if isinstance(other, NumArray): return NumArray([a * b for a, b in zip(self, other)])
+                return NumArray([a * other for a in self])
+            def __truediv__(self, other):
+                if isinstance(other, NumArray): return NumArray([a / b for a, b in zip(self, other)])
+                return NumArray([a / other for a in self])
+            def __neg__(self):
+                return NumArray([-a for a in self])
+            def __radd__(self, other):
+                return self.__add__(other)
+            def __rmul__(self, other):
+                return self.__mul__(other)
+            def __rsub__(self, other):
+                return NumArray([other - a for a in self])
+        def _np_radians(x):
+            return NumArray([math.radians(v) for v in x]) if isinstance(x, (list, NumArray)) else math.radians(x)
+        def _np_cos(x):
+            return NumArray([math.cos(v) for v in x]) if isinstance(x, (list, NumArray)) else math.cos(x)
+        def _np_sin(x):
+            return NumArray([math.sin(v) for v in x]) if isinstance(x, (list, NumArray)) else math.sin(x)
+        def _np_tan(x):
+            return NumArray([math.tan(v) for v in x]) if isinstance(x, (list, NumArray)) else math.tan(x)
+        def _np_clip(x, a, b):
+            if isinstance(x, (list, NumArray)): return NumArray([max(a, min(b, v)) for v in x])
+            return max(a, min(b, x))
+        def _np_arccos(x):
+            if isinstance(x, (list, NumArray)): return NumArray([math.acos(max(-1.0, min(1.0, v))) for v in x])
+            return math.acos(max(-1.0, min(1.0, x)))
+        def _np_sqrt(x):
+            if isinstance(x, (list, NumArray)): return NumArray([math.sqrt(max(0.0, v)) for v in x])
+            return math.sqrt(max(0.0, x))
+        def _np_max(a, b):
+            if isinstance(a, (list, NumArray)): return NumArray([max(x, b) for x in a])
+            return max(a, b)
+        np.radians = _np_radians
+        np.cos = _np_cos
+        np.sin = _np_sin
+        np.tan = _np_tan
+        np.clip = _np_clip
+        np.arccos = _np_arccos
+        np.sqrt = _np_sqrt
+        np.maximum = _np_max
+        class RandomRng:
+            def uniform(self, a, b, n): return NumArray([random.uniform(a, b) for _ in range(n)])
+            def integers(self, a, b, n): return NumArray([random.randint(a, b) for _ in range(n)])
+        class RandomMod:
+            default_rng = lambda self: RandomRng()
+        np.random = RandomMod()
+        np.array = lambda x, **k: NumArray(x)
+        np.array_split = lambda arr, n: [arr[i::n] for i in range(n)]
+        sys.modules["numpy"] = np
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 

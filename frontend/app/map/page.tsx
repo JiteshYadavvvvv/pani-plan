@@ -135,7 +135,7 @@ const StressMap = dynamic(() => import("./_components/StressMap").then((mod) => 
 
 export default function MapPage() {
   const { locale, t } = useLanguage();
-  const c = copy[locale];
+  const c = copy[locale === "en" ? "en" : "hi"];
 
   const [points, setPoints] = useState<WaterStressMapPoint[] | null>(null);
   const [districts, setDistricts] = useState<DistrictOut[]>([]);

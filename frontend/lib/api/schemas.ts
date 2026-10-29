@@ -308,7 +308,14 @@ export const fieldIoTStatusSchema = z.object({
   device_id: z.string().nullable(),
   sensor_model: z.string().nullable(),
   connection_status: z.enum(["online", "idle", "offline", "unlinked"]),
-  latest_reading: z.record(z.unknown()).nullable(),
+  latest_reading: z
+    .object({
+      soil_moisture_pct: z.number().optional(),
+      soil_temperature_c: z.number().optional(),
+      battery_voltage_v: z.number().optional(),
+    })
+    .passthrough()
+    .nullable(),
   sensor_recommendation: z.string().nullable(),
 });
 export type FieldIoTStatus = z.infer<typeof fieldIoTStatusSchema>;

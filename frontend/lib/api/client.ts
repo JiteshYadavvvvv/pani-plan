@@ -89,7 +89,10 @@ async function extractDetailMessage(response: Response): Promise<string | undefi
 
 async function requestJson<T>(
   path: string,
-  schema: z.ZodType<T>,
+  schema: {
+    parse: (data: unknown) => T;
+    safeParse: (data: unknown) => { success: true; data: T } | { success: false };
+  },
   init?: RequestInit,
   timeoutMs: number = DEFAULT_TIMEOUT_MS
 ): Promise<T> {

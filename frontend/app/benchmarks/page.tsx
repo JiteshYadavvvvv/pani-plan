@@ -123,7 +123,7 @@ const copy = {
 
 export default function BenchmarksPage() {
   const { locale, t } = useLanguage();
-  const c = copy[locale];
+  const c = copy[locale === "en" ? "en" : "hi"];
 
   const [runState, setRunState] = useState<RunState>({ status: "idle" });
   const isLoading = runState.status === "loading";

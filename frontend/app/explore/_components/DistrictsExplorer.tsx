@@ -105,7 +105,7 @@ export function DistrictsExplorer({
   onJumpToCrop: (cropId: string) => void;
 }) {
   const { locale, t } = useLanguage();
-  const c = copy[locale];
+  const c = copy[locale === "en" ? "en" : "hi"];
 
   const [state, setState] = useState<string>("all");
   const [search, setSearch] = useState("");
